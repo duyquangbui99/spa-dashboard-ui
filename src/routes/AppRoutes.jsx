@@ -4,10 +4,11 @@ import { lazy, Suspense } from 'react';
 
 const Home = lazy(() => import('../pages/Home/Home'));
 const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'));
+const Login = lazy(() => import('../pages/Login/Login'));
 
 const ProtectedRoute = ({ children }) => {
     const { isLoggedIn } = useAuth();
-    return isLoggedIn ? children : <Navigate to="/" />;
+    return isLoggedIn ? children : <Navigate to="/login" />;
 };
 
 export default function AppRoutes() {
@@ -15,6 +16,7 @@ export default function AppRoutes() {
         <Suspense fallback={<div>Loading...</div>}>
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
                 <Route
                     path="/dashboard"
                     element={

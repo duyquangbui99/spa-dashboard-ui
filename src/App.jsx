@@ -1,8 +1,15 @@
+import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
-import { useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
+
 function App() {
-  const { isLoggedIn } = useAuth();
-  return <AppRoutes isLoggedIn={isLoggedIn} />;
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
 
 export default App;
