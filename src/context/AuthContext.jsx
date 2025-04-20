@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
+        localStorage.removeItem('token'); // optional: if you stored JWT
         setIsLoggedIn(false);
         setRole(null);
     };
