@@ -21,7 +21,7 @@ const Login = () => {
 
             // Store token (optional: use cookies or secure storage)
             localStorage.setItem('token', token);
-            login(role); // sets isLoggedIn and role in context
+            login(name, role); // sets isLoggedIn and role in context
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed');

@@ -12,3 +12,22 @@
   --color-link: #5869ff;
   --color-alert: #f66;
 }
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Remove list styles */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Default link styling */
+a {
+  text-decoration: none;
+  color: inherit;
+}
