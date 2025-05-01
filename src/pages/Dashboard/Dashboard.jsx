@@ -9,7 +9,6 @@ const Dashboard = () => {
         <div className="dashboard-container">
             <Sidebar />
             <div className="main-content">
-                Dashboard content
                 <h2>Welcome, {name || 'User'}!</h2>
                 <p>Role: {role || 'N/A'}</p>
             </div>

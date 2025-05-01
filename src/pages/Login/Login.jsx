@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import axios from '../../utils/axiosInstance';
+import './Login.css';
 
 const Login = () => {
     const [name, setName] = useState('');
@@ -29,26 +30,56 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="PIN"
-                    value={pin}
-                    onChange={(e) => setPin(e.target.value)}
-                    required
-                />
-                <button type="submit">Login</button>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-            </form>
+
+        <div className="login-page">
+            <div className="login-background"></div>
+
+            <div className="login-card">
+                <div className="login-header">
+                    <h1>Tranquility</h1>
+                    <p>Nails & Spa</p>
+                </div>
+                <div className="login-form-container">
+                    <form onSubmit={handleSubmit} className="login-form">
+                        <div className="form-group">
+                            <div className="input-icon">
+                                <i className="user-icon"></i>
+                                <input
+                                    type="text"
+                                    placeholder="Username"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <div className="input-icon">
+                                <i className="password-icon"></i>
+                                <input
+                                    type="password"
+                                    placeholder="PIN"
+                                    value={pin}
+                                    onChange={(e) => setPin(e.target.value)}
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <button type="submit" className="login-button">
+                            LOGIN
+                        </button>
+                    </form>
+
+                    {error && <div className="error-message">{error}</div>}
+
+                </div>
+            </div>
+
+            <div className="login-footer">
+                <p>Tranquility Nails & Spa Staff Portal</p>
+            </div>
         </div>
     );
 };
