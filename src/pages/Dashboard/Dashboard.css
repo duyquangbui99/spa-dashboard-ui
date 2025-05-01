@@ -1,0 +1,15 @@
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    height: 100vh;
+    overflow-y: auto;
+    flex: 1;
+    background-color: #fff;
+}

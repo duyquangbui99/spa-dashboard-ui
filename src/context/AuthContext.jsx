@@ -5,20 +5,23 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [role, setRole] = useState(null);
+    const [name, setName] = useState(null);
 
-    const login = (userRole) => {
+    const login = (userName, userRole) => {
         setIsLoggedIn(true);
         setRole(userRole);
+        setName(userName);
     };
 
     const logout = () => {
         localStorage.removeItem('token'); // optional: if you stored JWT
         setIsLoggedIn(false);
         setRole(null);
+        setName(null);
     };
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, role, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, name, role, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
