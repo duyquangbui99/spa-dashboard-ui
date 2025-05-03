@@ -1,18 +1,38 @@
 import React from 'react';
-import Sidebar from '../../components/Sidebar';
-import './Dashboard.css'; // Make sure to create this file
+import DashboardLayout from './DashboardLayout';
 import { useAuth } from '../../context/AuthContext';
+import './Dashboard.css';
 
 const Dashboard = () => {
     const { name, role } = useAuth();
+
     return (
-        <div className="dashboard-container">
-            <Sidebar />
-            <div className="main-content">
+        <DashboardLayout>
+            <div className="dashboard-header">
                 <h2>Welcome, {name || 'User'}!</h2>
-                <p>Role: {role || 'N/A'}</p>
+                <p className="user-role">Role: {role || 'N/A'}</p>
             </div>
-        </div>
+
+            <div className="dashboard-content">
+                <div className="dashboard-card">
+                    <h3>Quick Stats</h3>
+                    <div className="dashboard-stats">
+                        <div className="stat-item">
+                            <span className="stat-value">28</span>
+                            <span className="stat-label">Appointments</span>
+                        </div>
+                        <div className="stat-item">
+                            <span className="stat-value">5</span>
+                            <span className="stat-label">Staff Members</span>
+                        </div>
+                        <div className="stat-item">
+                            <span className="stat-value">12</span>
+                            <span className="stat-label">Services</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </DashboardLayout>
     );
 };
 
