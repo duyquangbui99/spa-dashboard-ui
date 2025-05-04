@@ -1,0 +1,66 @@
+/* Bookings.css */
+
+.bookings-container {
+    padding: 2rem;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.bookings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.bookings-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.add-booking-btn {
+    padding: 0.5rem 1rem;
+    background-color: #008080;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.add-booking-btn:hover {
+    background-color: #006666;
+}
+
+.bookings-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border: 1px solid #ddd;
+    font-size: 0.9rem;
+}
+
+.bookings-table th,
+.bookings-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.bookings-table th {
+    background-color: #f6f6f6;
+    font-weight: bold;
+    color: #333;
+}
+
+.bookings-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.loading,
+.error {
+    padding: 1rem;
+    font-size: 1rem;
+    color: #444;
+}
