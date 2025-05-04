@@ -1,5 +1,4 @@
 import React from 'react';
-import DashboardLayout from './DashboardLayout';
 import { useAuth } from '../../context/AuthContext';
 import './Dashboard.css';
 
@@ -7,7 +6,7 @@ const Dashboard = () => {
     const { name, role } = useAuth();
 
     return (
-        <DashboardLayout>
+        <>
             <div className="dashboard-header">
                 <h2>Welcome, {name || 'User'}!</h2>
                 <p className="user-role">Role: {role || 'N/A'}</p>
@@ -32,7 +31,7 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-        </DashboardLayout>
+        </>
     );
 };
 
