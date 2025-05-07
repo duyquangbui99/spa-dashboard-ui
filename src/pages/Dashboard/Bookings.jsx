@@ -27,6 +27,9 @@ const Bookings = () => {
                         console.error('Invalid date found:', booking.startTime);
                     }
 
+                    startTimeDate.toLocaleString();
+
+
                     return {
                         ...booking,
                         // Store the original UTC date string for reference
