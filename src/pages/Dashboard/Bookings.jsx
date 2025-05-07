@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from '../../utils/axiosInstance';
 import './Bookings.css';
 
+import BookingModal from '../../components/BookingModal';
+
 const Bookings = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -9,6 +11,7 @@ const Bookings = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [viewMode, setViewMode] = useState('week'); // week, day, month
     const [selectedStaff, setSelectedStaff] = useState('all');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -214,8 +217,9 @@ const Bookings = () => {
         <div className="bookings-container">
             <div className="bookings-header">
                 <h2>Booking Calendar</h2>
-                <button className="add-booking-btn">+ Add Booking</button>
+                <button className="add-booking-btn" onClick={() => setIsModalOpen(true)}>+ Add Booking</button>
             </div>
+            <BookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
             <div className="calendar-controls">
                 <div className="date-navigation">
