@@ -87,14 +87,14 @@ const Bookings = () => {
     };
 
     // Get worker initials
-    const getInitials = (name) => {
+    /*const getInitials = (name) => {
         if (!name) return '';
         return name
             .split(' ')
             .map((n) => n[0])
             .join('')
             .toUpperCase();
-    };
+    };*/
 
     // Get service class for styling
     const getServiceClass = (serviceName) => {
@@ -105,7 +105,7 @@ const Bookings = () => {
     // Generate time slots for the calendar
     const generateTimeSlots = () => {
         const slots = [];
-        for (let hour = 9; hour <= 22; hour++) {
+        for (let hour = 9; hour <= 20; hour++) {
             slots.push(new Date(currentDate).setHours(hour, 0, 0, 0));
         }
         return slots;
@@ -164,6 +164,42 @@ const Bookings = () => {
         return (duration / 60) * slotHeight;
     };
 
+    // Calculate booking position and size
+    const getBookingPosition = (booking, allBookings) => {
+        // Find overlapping bookings
+        const overlappingBookings = allBookings.filter(b => {
+            const bookingStart = booking.startTime.getTime();
+            const bookingEnd = new Date(booking.startTime.getTime() + booking.duration * 60000).getTime();
+            const bStart = b.startTime.getTime();
+            const bEnd = new Date(b.startTime.getTime() + b.duration * 60000).getTime();
+
+            return (bookingStart < bEnd && bookingEnd > bStart);
+        });
+
+        // Find the first available row
+        const usedRows = overlappingBookings
+            .filter(b => b._id !== booking._id)
+            .map(b => b.row)
+            .filter(row => row !== undefined);
+
+        let row = 0;
+        while (usedRows.includes(row)) {
+            row++;
+        }
+
+        // Calculate height based on duration and position
+        const baseHeight = getBookingHeight(booking.duration);
+        const totalOverlapping = Math.max(...usedRows, row) + 1;
+        const adjustedHeight = baseHeight / totalOverlapping;
+
+        return {
+            top: `${row * adjustedHeight}px`,
+            height: `${adjustedHeight}px`,
+            row
+        };
+    };
+
+
     // Navigate to previous/next week
     const navigatePrevious = () => {
         const newDate = new Date(currentDate);
@@ -220,11 +256,9 @@ const Bookings = () => {
         <div className="bookings-container">
             <div className="bookings-header">
                 <h2>Booking Calendar</h2>
-                <button className="add-booking-btn" onClick={() => setIsModalOpen(true)}>+ Add Booking</button>
             </div>
-            <BookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
-            <div className="calendar-controls">
+            <div className="controls-wrapper">
                 <div className="date-navigation">
                     <button className="nav-btn" onClick={navigatePrevious}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -246,6 +280,7 @@ const Bookings = () => {
                         </svg>
                     </button>
                 </div>
+
                 <div className="view-options">
                     <button
                         className={`view-btn ${viewMode === 'day' ? 'active' : ''}`}
@@ -266,97 +301,101 @@ const Bookings = () => {
                         Month
                     </button>
                 </div>
+
+                <div className="staff-dropdown">
+                    <select
+                        value={selectedStaff}
+                        onChange={(e) => setSelectedStaff(e.target.value)}
+                    >
+                        <option value="all">All Staff</option>
+                        {staff.map(worker => (
+                            <option key={worker._id} value={worker._id}>
+                                {worker.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <button className="add-booking-btn" onClick={() => setIsModalOpen(true)}>
+                    + Add Booking
+                </button>
             </div>
 
-            <div className="staff-list">
-                <div
-                    className="staff-item"
-                    onClick={() => setSelectedStaff('all')}
-                    style={{ opacity: selectedStaff === 'all' ? 1 : 0.6 }}
-                >
-                    <div className="staff-avatar" style={{ backgroundColor: '#e0dcfa' }}>
-                        ALL
-                    </div>
-                    <div className="staff-name">All Staff</div>
-                </div>
-                {staff.map(worker => (
-                    <div
-                        key={worker._id}
-                        className="staff-item"
-                        onClick={() => setSelectedStaff(worker._id)}
-                        style={{ opacity: selectedStaff === worker._id ? 1 : 0.6 }}
-                    >
-                        <div className="staff-avatar">
-                            {getInitials(worker.name)}
-                        </div>
-                        <div className="staff-name">{worker.name}</div>
-                    </div>
-                ))}
-            </div>
+            <BookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
             {viewMode === 'week' && (
                 <div className="calendar-grid">
-                    <div className="time-column">
-                        <div className="day-header"></div>
-                        {timeSlots.map((time, index) => (
-                            <div className="time-slot" key={index}>
-                                <span className="time-label">
-                                    {formatTime(new Date(time))}
-                                </span>
+                    <div className="calendar-grid-scroll">
+                        <div className="time-column">
+                            <div className="day-header"></div>
+                            {timeSlots.map((time, index) => (
+                                <div className="time-slot" key={index}>
+                                    <span className="time-label">
+                                        {formatTime(new Date(time))}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {weekDays.map((day, dayIndex) => (
+                            <div className="day-column" key={dayIndex}>
+                                <div className="day-header">
+                                    {formatShortDate(day)}
+                                </div>
+
+                                {timeSlots.map((time, timeIndex) => {
+                                    let slotBookings = getBookingsForSlot(day, time);
+
+                                    if (selectedStaff !== 'all') {
+                                        slotBookings = slotBookings.filter(booking =>
+                                            booking.workerId && booking.workerId._id === selectedStaff
+                                        );
+                                    }
+
+                                    // Pre-calculate positions for all bookings in this slot
+                                    slotBookings.forEach((booking, index) => {
+                                        const position = getBookingPosition(booking, slotBookings);
+                                        booking.row = position.row;
+                                    });
+
+                                    return (
+                                        <div className="day-time-slot" key={timeIndex}>
+                                            {slotBookings.map((booking, bookingIndex) => {
+                                                const mainService = booking.serviceIds[0]?.name || '';
+                                                const serviceClass = getServiceClass(mainService);
+                                                const position = getBookingPosition(booking, slotBookings);
+
+                                                return (
+                                                    <div
+                                                        key={booking._id}
+                                                        className={`booking-card ${serviceClass}`}
+                                                        style={{
+                                                            height: position.height,
+                                                            width: '98%', // Leave a small gap on the sides
+                                                            left: '1%',
+                                                            top: position.top,
+                                                            position: 'absolute',
+                                                            zIndex: bookingIndex + 1
+                                                        }}
+                                                    >
+                                                        <div className="booking-time">
+                                                            {formatTime(booking.startTime)}
+                                                        </div>
+                                                        <div className="booking-customer">
+                                                            {booking.customerName}
+                                                        </div>
+                                                        <div className="booking-service">
+                                                            {booking.serviceIds.map(s => s.name).join(', ')}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         ))}
                     </div>
-
-                    {weekDays.map((day, dayIndex) => (
-                        <div className="day-column" key={dayIndex}>
-                            <div className="day-header">
-                                {formatShortDate(day)}
-                            </div>
-
-                            {timeSlots.map((time, timeIndex) => {
-                                // Filter bookings for this staff member if selected
-                                let slotBookings = getBookingsForSlot(day, time);
-
-                                if (selectedStaff !== 'all') {
-                                    slotBookings = slotBookings.filter(booking =>
-                                        booking.workerId && booking.workerId._id === selectedStaff
-                                    );
-                                }
-
-                                return (
-                                    <div className="day-time-slot" key={timeIndex}>
-                                        {slotBookings.map((booking, bookingIndex) => {
-                                            const mainService = booking.serviceIds[0]?.name || '';
-                                            const serviceClass = getServiceClass(mainService);
-                                            const height = getBookingHeight(booking.duration);
-
-                                            return (
-                                                <div
-                                                    key={booking._id}
-                                                    className={`booking-card ${serviceClass}`}
-                                                    style={{
-                                                        height: `${height}px`,
-                                                        top: '0',
-                                                        zIndex: bookingIndex + 1
-                                                    }}
-                                                >
-                                                    <div className="booking-time">
-                                                        {formatTime(booking.startTime)}
-                                                    </div>
-                                                    <div className="booking-customer">
-                                                        {booking.customerName}
-                                                    </div>
-                                                    <div className="booking-service">
-                                                        {booking.serviceIds.map(s => s.name).join(', ')}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ))}
                 </div>
             )}
 
