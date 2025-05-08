@@ -23,3 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+
+# Cursor
+.cursor/
+.cursor-cache/
+.cursor-settings.json
