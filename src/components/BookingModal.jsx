@@ -44,6 +44,23 @@ const BookingModal = ({ isOpen, onClose }) => {
                 return acc + (svc?.duration || 0);
             }, 0);
 
+            // If the selected worker is "Anyone", show all available slots without checking bookings
+            if (worker.name === "Anyone") {
+                const start = parseTime(worker.workingHours.start);
+                const end = parseTime(worker.workingHours.end);
+
+                const slots = [];
+                for (let time = start; time + totalDuration <= end; time += 15) {
+                    slots.push({
+                        time: formatTime(time),
+                        available: true
+                    });
+                }
+
+                setAvailableTimeSlots(slots);
+                return;
+            }
+
             // Create date objects for comparison (using local midnight)
             const [year, month, day] = selectedDate.split('-').map(Number);
             const selectedDateLocal = new Date(year, month - 1, day); // months are 0-based
