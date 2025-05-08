@@ -12,52 +12,177 @@
 }
 
 .modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
+    background: var(--color-background);
+    padding: 2.5rem;
+    border-radius: 12px;
     width: 90%;
     max-width: 500px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     position: relative;
+}
+
+.modal-header {
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+    color: var(--color-primary-text);
+    font-size: 1.5rem;
+    font-weight: 600;
 }
 
 .close-button {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 1.25rem;
+    right: 1.25rem;
     border: none;
-    background: transparent;
-    font-size: 1.2rem;
+    background: var(--color-button);
+    color: var(--color-muted-text);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.1rem;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.close-button:hover {
+    background: var(--color-button-border);
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
 }
 
 label {
-    font-weight: bold;
+    font-weight: 500;
     display: block;
-    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-primary-text);
 }
 
 input,
 select {
     width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.25rem;
-    margin-bottom: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    padding: 0.75rem;
+    border: 1px solid var(--color-button-border);
+    border-radius: 8px;
+    background: white;
+    color: var(--color-primary-text);
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
 }
 
-button {
-    background: #00a86b;
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--color-calendar-selected);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border: 1px solid var(--color-button-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.service-item:hover {
+    background: var(--color-sidebar-hover);
+}
+
+.service-item.selected {
+    background: var(--color-sidebar-bg);
+    border-color: var(--color-accent);
+}
+
+.service-item input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.75rem;
+}
+
+.time-slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.time-slots-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.time-slots-grid::-webkit-scrollbar-track {
+    background: var(--color-button);
+    border-radius: 3px;
+}
+
+.time-slots-grid::-webkit-scrollbar-thumb {
+    background: var(--color-calendar-selected);
+    border-radius: 3px;
+}
+
+.time-slot {
+    padding: 0.5rem;
+    text-align: center;
+    border: 1px solid var(--color-button-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.time-slot:not(.disabled):hover {
+    background: var(--color-calendar-hover);
+}
+
+.time-slot.selected {
+    background: var(--color-calendar-selected);
+    color: white;
+    border-color: var(--color-calendar-selected);
+}
+
+.time-slot.disabled {
+    background: var(--color-button);
+    color: var(--color-muted-text);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.submit-button {
+    background: var(--color-calendar-selected);
     color: white;
     border: none;
-    padding: 0.75rem 1rem;
-    border-radius: 4px;
+    padding: 0.875rem;
+    border-radius: 8px;
     cursor: pointer;
     width: 100%;
-    font-weight: bold;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: opacity 0.2s ease;
+    margin-top: 1.5rem;
 }
 
-button:hover {
-    background: #008e5c;
+.submit-button:hover {
+    opacity: 0.9;
+}
+
+.submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
