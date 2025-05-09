@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from '../../utils/axiosInstance';
 import './Bookings.css';
 
@@ -13,10 +13,41 @@ const Bookings = () => {
     const [selectedStaff, setSelectedStaff] = useState('all');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    //Get start and end dates for the current view
+    const getStartAndEndDates = useCallback(() => {
+        const start = new Date(currentDate);
+        const end = new Date(currentDate);
+
+        if (viewMode === 'month') {
+            start.setMonth(start.getMonth() - 6); // 6 months before
+            start.setDate(1); // start of that month
+            start.setHours(0, 0, 0, 0);
+
+            end.setMonth(end.getMonth() + 6); // 6 months after
+            end.setDate(0); // end of that month
+            end.setHours(23, 59, 59, 999);
+        } else {  //for day and week view
+            start.setDate(start.getDate() - 14); // 2 weeks before
+            start.setHours(0, 0, 0, 0);
+
+            end.setMonth(end.getMonth() + 3); // 3 months after
+            end.setHours(23, 59, 59, 999);
+        }
+
+        return {
+            start: start.toISOString(),
+            end: end.toISOString()
+        };
+    }, [currentDate, viewMode]);
+
+
     useEffect(() => {
         const fetchBookings = async () => {
             try {
-                const res = await axios.get('/api/bookings');
+                const { start, end } = getStartAndEndDates();
+                const res = await axios.get(`/api/bookings/range?start=${start}&end=${end}`);
+
+                console.log(start, end)
                 // Ensure all bookings have valid Date objects
                 const normalizedBookings = res.data.map(booking => {
                     // Create a proper Date object from the startTime string
@@ -49,7 +80,8 @@ const Bookings = () => {
             }
         };
         fetchBookings();
-    }, []);
+    }, [getStartAndEndDates]);
+
 
     // Get start of the week (Monday)
     const getWeekStart = (date) => {
