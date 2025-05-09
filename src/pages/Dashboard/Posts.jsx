@@ -23,7 +23,7 @@ const Posts = () => {
 
         try {
             setLoading(true);
-            const res = await axios.post('/api/caption', { imageUrl: images[0] });
+            const res = await axios.post('/api/gpt/caption', { imageUrl: images[0] });
             setCaption(res.data.caption);
         } catch (err) {
             setError('Failed to generate caption.');
