@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Home, Calendar, Award, Users, LogOut, Menu, X } from 'lucide-react';
+import { Home, Calendar, Award, Users, LogOut, Menu, X, Newspaper } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Sidebar.css';
@@ -16,7 +16,8 @@ const Sidebar = () => {
         { name: 'Dashboard', icon: <Home size={20} />, path: '/dashboard' },
         { name: 'Bookings', icon: <Calendar size={20} />, path: '/dashboard/bookings' },
         { name: 'Services', icon: <Award size={20} />, path: '/dashboard/services' },
-        { name: 'Staff', icon: <Users size={20} />, path: '/dashboard/staff' },
+        { name: 'Staffs', icon: <Users size={20} />, path: '/dashboard/staffs' },
+        { name: 'Posts', icon: <Newspaper size={20} />, path: '/dashboard/posts' },
     ];
 
     // Check if window is in mobile view on mount and when resized
