@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from '../../utils/axiosInstance';
 import './Bookings.css';
+import WeekView from './views/WeekView';
+import DayView from './views/DayView';
+import MonthView from './views/MonthView';
 
 import BookingModal from '../../components/BookingModal';
 
@@ -354,88 +357,43 @@ const Bookings = () => {
             </div>
 
             <BookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-
+            {/* Week view */}
             {viewMode === 'week' && (
-                <div className="calendar-grid">
-                    <div className="calendar-grid-scroll">
-                        <div className="time-column">
-                            <div className="day-header"></div>
-                            {timeSlots.map((time, index) => (
-                                <div className="time-slot" key={index}>
-                                    <span className="time-label">
-                                        {formatTime(new Date(time))}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-
-                        {weekDays.map((day, dayIndex) => (
-                            <div className="day-column" key={dayIndex}>
-                                <div className="day-header">
-                                    {formatShortDate(day)}
-                                </div>
-
-                                {timeSlots.map((time, timeIndex) => {
-                                    let slotBookings = getBookingsForSlot(day, time);
-
-                                    if (selectedStaff !== 'all') {
-                                        slotBookings = slotBookings.filter(booking =>
-                                            booking.workerId && booking.workerId._id === selectedStaff
-                                        );
-                                    }
-
-                                    // Pre-calculate positions for all bookings in this slot
-                                    slotBookings.forEach((booking, index) => {
-                                        const position = getBookingPosition(booking, slotBookings);
-                                        booking.row = position.row;
-                                    });
-
-                                    return (
-                                        <div className="day-time-slot" key={timeIndex}>
-                                            {slotBookings.map((booking, bookingIndex) => {
-                                                const mainService = booking.serviceIds[0]?.name || '';
-                                                const serviceClass = getServiceClass(mainService);
-                                                const position = getBookingPosition(booking, slotBookings);
-
-                                                return (
-                                                    <div
-                                                        key={booking._id}
-                                                        className={`booking-card ${serviceClass}`}
-                                                        style={{
-                                                            height: position.height,
-                                                            width: '98%', // Leave a small gap on the sides
-                                                            left: '1%',
-                                                            top: position.top,
-                                                            position: 'absolute',
-                                                            zIndex: bookingIndex + 1
-                                                        }}
-                                                    >
-                                                        <div className="booking-time">
-                                                            {formatTime(booking.startTime)}
-                                                        </div>
-                                                        <div className="booking-customer">
-                                                            {booking.customerName}
-                                                        </div>
-                                                        <div className="booking-service">
-                                                            {booking.serviceIds.map(s => s.name).join(', ')}
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                <WeekView
+                    bookings={bookings}
+                    currentDate={currentDate}
+                    selectedStaff={selectedStaff}
+                    timeSlots={timeSlots}
+                    weekDays={weekDays}
+                    getBookingsForSlot={getBookingsForSlot}
+                    getBookingPosition={getBookingPosition}
+                    getServiceClass={getServiceClass}
+                    formatTime={formatTime}
+                    formatShortDate={formatShortDate}
+                />
             )}
-
-            {viewMode !== 'week' && (
-                <div style={{ padding: '20px', textAlign: 'center' }}>
-                    {viewMode === 'day' ? 'Day view' : 'Month view'} implementation would go here.
-                    Currently showing week view for demonstration.
-                </div>
+            {/* Day view */}
+            {viewMode === 'day' && (
+                <DayView
+                    bookings={bookings}
+                    currentDate={currentDate}
+                    selectedStaff={selectedStaff}
+                    timeSlots={timeSlots}
+                    getBookingsForSlot={getBookingsForSlot}
+                    getBookingPosition={getBookingPosition}
+                    getServiceClass={getServiceClass}
+                    formatTime={formatTime}
+                    formatDateHeader={formatDateHeader}
+                />
+            )}
+            {/* Month view */}
+            {viewMode === 'month' && (
+                <MonthView
+                    bookings={bookings}
+                    currentDate={currentDate}
+                    selectedStaff={selectedStaff}
+                    formatTime={formatTime}
+                />
             )}
 
             <div className="service-labels">
