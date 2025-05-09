@@ -1,0 +1,142 @@
+.posts-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.posts-container h2 {
+    color: var(--color-primary-text);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Desktop layout */
+@media (min-width: 769px) {
+    .posts-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    .posts-left-section {
+        position: sticky;
+        top: 2rem;
+    }
+
+    .posts-right-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+.posts-container input[type="file"] {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    background-color: var(--color-button);
+    border: 2px dashed var(--color-button-border);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.image-preview {
+    margin: 1.5rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    max-height: 500px;
+}
+
+.posts-container button {
+    width: 100%;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    border: 1px solid var(--color-button-border);
+    border-radius: 8px;
+    background-color: var(--color-button);
+    color: var(--color-primary-text);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.posts-container button:hover:not(:disabled) {
+    background-color: var(--color-accent);
+    color: white;
+    border-color: var(--color-accent);
+}
+
+.posts-container button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.posts-container textarea {
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid var(--color-button-border);
+    border-radius: 8px;
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+    background-color: var(--color-background);
+    color: var(--color-primary-text);
+}
+
+.posts-container textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(111, 221, 139, 0.1);
+}
+
+.success {
+    color: var(--color-accent);
+    background-color: rgba(111, 221, 139, 0.1);
+    padding: 0.8rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.error {
+    color: var(--color-alert);
+    background-color: rgba(255, 102, 102, 0.1);
+    padding: 0.8rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* Loading state styles */
+.posts-container button:disabled {
+    background-color: var(--color-button);
+    position: relative;
+}
+
+/* Mobile layout */
+@media (max-width: 768px) {
+    .posts-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .posts-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}
