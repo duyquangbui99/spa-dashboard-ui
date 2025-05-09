@@ -6,6 +6,7 @@ const Posts = () => {
     const [imageFile, setImageFile] = useState(null);
     const [caption, setCaption] = useState('');
     const [loading, setLoading] = useState(false);
+    const [captionLoading, setCaptionLoading] = useState(false);
     const [error, setError] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [previewUrl, setPreviewUrl] = useState('');
@@ -28,7 +29,7 @@ const Posts = () => {
         formData.append('image', imageFile);
 
         try {
-            setLoading(true);
+            setCaptionLoading(true);
             const res = await axios.post('/api/gpt/caption', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
@@ -37,10 +38,9 @@ const Posts = () => {
         } catch (err) {
             setError('Failed to generate caption.');
         } finally {
-            setLoading(false);
+            setCaptionLoading(false);
         }
     };
-
 
     const handlePost = async () => {
         if (!imageFile || !caption) {
@@ -53,7 +53,7 @@ const Posts = () => {
 
         try {
             setLoading(true);
-            const res = await axios.post('/api/socialmedia', formData, {
+            await axios.post('/api/socialmedia', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setSuccessMessage('Posted successfully!');
@@ -84,19 +84,37 @@ const Posts = () => {
                 </div>
 
                 <div className="posts-right-section">
-                    <button onClick={generateCaption} disabled={loading || !imageFile}>
-                        Generate Caption with AI
+                    <button
+                        onClick={generateCaption}
+                        disabled={captionLoading || !imageFile}
+                        className={captionLoading ? 'loading' : ''}
+                    >
+                        <span className="button-content">
+                            {captionLoading && <span className="loading-spinner" />}
+                            Generate Caption with AI
+                        </span>
                     </button>
 
-                    <textarea
-                        placeholder="Write your own caption or use AI to generate"
-                        value={caption}
-                        onChange={(e) => setCaption(e.target.value)}
-                        rows={3}
-                    />
+                    {captionLoading ? (
+                        <div className="caption-loading" />
+                    ) : (
+                        <textarea
+                            placeholder="Write your own caption or use AI to generate"
+                            value={caption}
+                            onChange={(e) => setCaption(e.target.value)}
+                            rows={3}
+                        />
+                    )}
 
-                    <button onClick={handlePost} disabled={loading || !imageFile || !caption}>
-                        Post to Facebook
+                    <button
+                        onClick={handlePost}
+                        disabled={loading || !imageFile || !caption}
+                        className={loading ? 'loading' : ''}
+                    >
+                        <span className="button-content">
+                            {loading && <span className="loading-spinner" />}
+                            Post to Facebook
+                        </span>
                     </button>
 
                     {successMessage && <p className="success">{successMessage}</p>}
