@@ -4,65 +4,111 @@ const MonthView = ({
     bookings,
     currentDate,
     selectedStaff,
-    formatTime
+    formatTime,
+    getServiceClass
 }) => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    const getDaysInMonth = (date) => {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
 
-    // Get first and last day of the month
-    const firstDayOfMonth = new Date(year, month, 1);
-    const lastDayOfMonth = new Date(year, month + 1, 0);
-    const totalDays = lastDayOfMonth.getDate();
+        // Get the first day of the week (Monday)
+        const firstDayOfWeek = new Date(firstDay);
+        firstDayOfWeek.setDate(firstDayOfWeek.getDate() - firstDayOfWeek.getDay() + (firstDayOfWeek.getDay() === 0 ? -6 : 1));
 
-    // Get day of week the first day lands on (0 = Sun, 1 = Mon, ...)
-    const startDay = firstDayOfMonth.getDay();
+        // Get the last day of the week (Sunday)
+        const lastDayOfWeek = new Date(lastDay);
+        lastDayOfWeek.setDate(lastDayOfWeek.getDate() + (7 - lastDayOfWeek.getDay()));
 
-    // Build array of all dates to render (including blank slots before month starts)
-    const calendarDays = [];
-    for (let i = 0; i < startDay; i++) {
-        calendarDays.push(null); // Empty slots
-    }
+        const days = [];
+        const currentDay = new Date(firstDayOfWeek);
 
-    for (let i = 1; i <= totalDays; i++) {
-        calendarDays.push(new Date(year, month, i));
-    }
+        while (currentDay <= lastDayOfWeek) {
+            days.push(new Date(currentDay));
+            currentDay.setDate(currentDay.getDate() + 1);
+        }
 
-    // Group bookings by date
-    const getBookingsForDate = (date) => {
+        return days;
+    };
+
+    const getBookingsForDay = (date) => {
         return bookings.filter(booking => {
+            if (selectedStaff !== 'all' && booking.workerId?._id !== selectedStaff) {
+                return false;
+            }
+
             const bookingDate = new Date(booking.startTime);
             return (
-                bookingDate.getFullYear() === date.getFullYear() &&
-                bookingDate.getMonth() === date.getMonth() &&
                 bookingDate.getDate() === date.getDate() &&
-                (selectedStaff === 'all' || booking.workerId?._id === selectedStaff)
+                bookingDate.getMonth() === date.getMonth() &&
+                bookingDate.getFullYear() === date.getFullYear()
             );
         });
     };
 
+    const isToday = (date) => {
+        const today = new Date();
+        return (
+            date.getDate() === today.getDate() &&
+            date.getMonth() === today.getMonth() &&
+            date.getFullYear() === today.getFullYear()
+        );
+    };
+
+    const isCurrentMonth = (date) => {
+        return date.getMonth() === currentDate.getMonth();
+    };
+
+    const days = getDaysInMonth(currentDate);
+    const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
     return (
         <div className="month-view-grid">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, idx) => (
-                <div key={idx} className="month-day-header">{day}</div>
-            ))}
-
-            {calendarDays.map((date, idx) => (
-                <div key={idx} className="month-day-cell">
-                    {date && (
-                        <>
-                            <div className="month-day-number">{date.getDate()}</div>
-                            <div className="month-bookings">
-                                {getBookingsForDate(date).map(booking => (
-                                    <div key={booking._id} className="month-booking-card">
-                                        <strong>{formatTime(new Date(booking.startTime))}</strong>
-                                        <div style={{ fontSize: '11px' }}>{booking.customerName}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </>
-                    )}
+            {weekDays.map(day => (
+                <div key={day} className="month-day-header">
+                    {day}
                 </div>
             ))}
+
+            {days.map((day, index) => {
+                const dayBookings = getBookingsForDay(day);
+                const cellClasses = [
+                    'month-day-cell',
+                    isCurrentMonth(day) ? 'current-month' : 'other-month',
+                    isToday(day) ? 'today' : ''
+                ].filter(Boolean).join(' ');
+
+                return (
+                    <div key={index} className={cellClasses}>
+                        <div className="month-day-number">
+                            {day.getDate()}
+                        </div>
+                        {dayBookings.map(booking => {
+                            const mainService = booking.serviceIds[0]?.name || '';
+                            const serviceClass = getServiceClass(mainService);
+
+                            return (
+                                <div
+                                    key={booking._id}
+                                    className={`month-booking-card ${serviceClass}`}
+                                    title={`${booking.customerName} - ${booking.serviceIds.map(s => s.name).join(', ')}`}
+                                >
+                                    <div className="month-booking-time">
+                                        {formatTime(booking.startTime)}
+                                    </div>
+                                    <div className="month-booking-customer">
+                                        {booking.customerName}
+                                    </div>
+                                    <div className="month-booking-service">
+                                        {booking.serviceIds.map(s => s.name).join(', ')}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                );
+            })}
         </div>
     );
 };

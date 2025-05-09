@@ -4,6 +4,7 @@ import './Bookings.css';
 import WeekView from './views/WeekView';
 import DayView from './views/DayView';
 import MonthView from './views/MonthView';
+import { useAuth } from '../../context/AuthContext';
 
 import BookingModal from '../../components/BookingModal';
 
@@ -15,7 +16,7 @@ const Bookings = () => {
     const [viewMode, setViewMode] = useState('week'); // week, day, month
     const [selectedStaff, setSelectedStaff] = useState('all');
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const { role, workerId } = useAuth();
     //Get start and end dates for the current view
     const getStartAndEndDates = useCallback(() => {
         const start = new Date(currentDate);
@@ -48,9 +49,18 @@ const Bookings = () => {
         const fetchBookings = async () => {
             try {
                 const { start, end } = getStartAndEndDates();
-                const res = await axios.get(`/api/bookings/range?start=${start}&end=${end}`);
+                let res
 
-                console.log(start, end)
+                if (role === 'admin') {
+
+                    res = await axios.get(`/api/bookings/range?start=${start}&end=${end}`);
+                }
+
+                else {
+                    res = await axios.get(`/api/bookings/worker/${workerId}/range?start=${start}&end=${end}`);
+                };
+
+                console.log(role, workerId)
                 // Ensure all bookings have valid Date objects
                 const normalizedBookings = res.data.map(booking => {
                     // Create a proper Date object from the startTime string
@@ -83,7 +93,7 @@ const Bookings = () => {
             }
         };
         fetchBookings();
-    }, [getStartAndEndDates]);
+    }, [getStartAndEndDates, role, workerId]);
 
 
     // Get start of the week (Monday)
@@ -94,12 +104,12 @@ const Bookings = () => {
         return new Date(d.setDate(diff));
     };
 
-    // Format date as "Monday, 27 Apr 2025"
+    // Format date as "Sat, May 10 2025"
     const formatDateHeader = (date) => {
         return date.toLocaleDateString('en-US', {
-            weekday: 'long',
-            day: 'numeric',
+            weekday: 'short',
             month: 'short',
+            day: 'numeric',
             year: 'numeric'
         });
     };
@@ -336,20 +346,20 @@ const Bookings = () => {
                         Month
                     </button>
                 </div>
-
-                <div className="staff-dropdown">
-                    <select
-                        value={selectedStaff}
-                        onChange={(e) => setSelectedStaff(e.target.value)}
-                    >
-                        <option value="all">All Staff</option>
-                        {staff.map(worker => (
-                            <option key={worker._id} value={worker._id}>
-                                {worker.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {role === 'admin' && viewMode !== 'day' && (
+                    <div className="staff-dropdown">
+                        <select
+                            value={selectedStaff}
+                            onChange={(e) => setSelectedStaff(e.target.value)}
+                        >
+                            <option value="all">All Staff</option>
+                            {staff.map(worker => (
+                                <option key={worker._id} value={worker._id}>
+                                    {worker.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>)}
 
                 <button className="add-booking-btn" onClick={() => setIsModalOpen(true)}>
                     + Add Booking
@@ -393,6 +403,7 @@ const Bookings = () => {
                     currentDate={currentDate}
                     selectedStaff={selectedStaff}
                     formatTime={formatTime}
+                    getServiceClass={getServiceClass}
                 />
             )}
 
