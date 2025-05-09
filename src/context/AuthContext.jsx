@@ -6,11 +6,13 @@ export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [role, setRole] = useState(null);
     const [name, setName] = useState(null);
+    const [workerId, setWorkerId] = useState(null);
 
-    const login = (userName, userRole) => {
+    const login = (userName, userRole, workerId) => {
         setIsLoggedIn(true);
         setRole(userRole);
         setName(userName);
+        setWorkerId(workerId);
     };
 
     const logout = () => {
@@ -18,10 +20,11 @@ export const AuthProvider = ({ children }) => {
         setIsLoggedIn(false);
         setRole(null);
         setName(null);
+        setWorkerId(null);
     };
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, name, role, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, name, role, workerId, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
