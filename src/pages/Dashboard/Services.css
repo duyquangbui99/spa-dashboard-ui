@@ -20,7 +20,7 @@
 }
 
 .services-container .create-button {
-    background-color: var(--color-calendar-selected);
+    background-color: var(--color-accent);
     color: white;
     border: none;
     border-radius: 8px;
@@ -109,8 +109,8 @@
 
 .service-form input:focus {
     outline: none;
-    border-color: var(--color-calendar-selected);
-    box-shadow: 0 0 0 3px rgba(126, 102, 242, 0.1);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(111, 221, 139, 0.1);
 }
 
 .modal-actions {
@@ -139,7 +139,7 @@
 }
 
 .modal-actions .submit-button {
-    background-color: var(--color-calendar-selected);
+    background-color: var(--color-accent);
     color: white;
     border: none;
 }
@@ -203,7 +203,7 @@
 }
 
 .service-table button:first-child {
-    background-color: var(--color-calendar-selected);
+    background-color: var(--color-accent);
     color: white;
     border: none;
 }

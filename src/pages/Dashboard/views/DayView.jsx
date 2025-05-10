@@ -22,7 +22,19 @@ const DayView = ({
         return Array.from(staffMap.values());
     };
 
+    const getCurrentDayBookings = () => {
+        return bookings.filter(booking => {
+            const bookingDate = new Date(booking.startTime);
+            return (
+                bookingDate.getDate() === currentDate.getDate() &&
+                bookingDate.getMonth() === currentDate.getMonth() &&
+                bookingDate.getFullYear() === currentDate.getFullYear()
+            );
+        });
+    };
+
     const staffMembers = getUniqueStaff();
+    const currentDayBookings = getCurrentDayBookings();
 
     // Filter bookings for a specific staff member
     const getStaffBookings = (timeSlot, staffId) => {
@@ -32,6 +44,12 @@ const DayView = ({
 
     return (
         <div className="day-view-container">
+            {currentDayBookings.length > 0 && (
+                <div className="day-bookings-count">
+                    <span className="count-number">{currentDayBookings.length}</span>
+                    booking{currentDayBookings.length !== 1 ? 's' : ''} on {formatDateHeader(currentDate)}
+                </div>
+            )}
             <div className="day-view-header">
                 <div className="day-view-time-header">Time</div>
                 {staffMembers.map(staff => (
