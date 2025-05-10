@@ -61,7 +61,7 @@ const Sidebar = () => {
             {isMobileView && (
                 <div className="mobile-navbar">
                     <div className="mobile-navbar-header">
-                        <h1>Tranquility Nails & Spa</h1>
+                        <h1>Quang Spa Project</h1>
                         <button className="mobile-menu-toggle" onClick={toggleMobileNav}>
                             {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
@@ -93,8 +93,8 @@ const Sidebar = () => {
             {!isMobileView && (
                 <div className="sidebar">
                     <div className="sidebar-header">
-                        <h1>Tranquility</h1>
-                        <p>Nails & Spa</p>
+                        <h1>Quang Bui</h1>
+                        <p>Spa Project</p>
                     </div>
 
                     <div className="sidebar-nav">

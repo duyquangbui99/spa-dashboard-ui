@@ -20,7 +20,7 @@
 }
 
 .services-container .create-button {
-    background-color: var(--color-accent);
+    background-color: var(--color-calendar-selected);
     color: white;
     border: none;
     border-radius: 8px;
@@ -32,11 +32,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    box-shadow: 0 2px 4px rgba(111, 221, 139, 0.2);
 }
 
 .services-container .create-button:hover {
-    background-color: var(--color-accent);
     opacity: 0.9;
     transform: translateY(-1px);
 }
@@ -111,8 +109,8 @@
 
 .service-form input:focus {
     outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(111, 221, 139, 0.1);
+    border-color: var(--color-calendar-selected);
+    box-shadow: 0 0 0 3px rgba(126, 102, 242, 0.1);
 }
 
 .modal-actions {
@@ -120,7 +118,6 @@
     justify-content: flex-end;
     gap: 12px;
     margin-top: 16px;
-    padding: 0 24px 24px;
 }
 
 .modal-actions button {
@@ -142,10 +139,9 @@
 }
 
 .modal-actions .submit-button {
-    background-color: var(--color-accent);
+    background-color: var(--color-calendar-selected);
     color: white;
     border: none;
-    box-shadow: 0 2px 4px rgba(111, 221, 139, 0.2);
 }
 
 .modal-actions .submit-button:hover {
@@ -174,6 +170,7 @@
     color: var(--color-primary-text);
     font-weight: 600;
     padding: 16px;
+    text-align: left;
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -206,10 +203,9 @@
 }
 
 .service-table button:first-child {
-    background-color: var(--color-accent);
+    background-color: var(--color-calendar-selected);
     color: white;
     border: none;
-    box-shadow: 0 2px 4px rgba(111, 221, 139, 0.2);
 }
 
 .service-table button:first-child:hover {
@@ -225,4 +221,22 @@
 
 .service-table button:last-child:hover {
     background-color: rgba(255, 102, 102, 0.2);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .services-container {
+        padding: 16px;
+    }
+
+    .services-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .service-table {
+        display: block;
+        overflow-x: auto;
+    }
 }
