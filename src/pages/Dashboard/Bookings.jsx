@@ -144,7 +144,10 @@ const Bookings = () => {
     // Get service class for styling
     const getServiceClass = (serviceName) => {
         if (!serviceName) return '';
-        return serviceName.toLowerCase().replace(/[\s-]+/g, '-');
+        return serviceName
+            .toLowerCase()
+            .replace(/['"]/g, '') // remove apostrophes and quotes
+            .replace(/[\s-]+/g, '-'); // replace space/hyphen with single hyphen
     };
 
     // Generate time slots for the calendar
@@ -198,6 +201,9 @@ const Bookings = () => {
                 console.error('Error comparing dates:', err, booking);
                 return false;
             }
+        }).sort((a, b) => {
+            // Sort by minutes within the hour
+            return a.startTime.getMinutes() - b.startTime.getMinutes();
         });
     };
 
@@ -409,28 +415,32 @@ const Bookings = () => {
 
             <div className="service-labels">
                 <div className="service-label">
+                    <div className="service-color pedicure"></div>
+                    <span>Pedicure</span>
+                </div>
+                <div className="service-label">
+                    <div className="service-color manicure"></div>
+                    <span>Manicure</span>
+                </div>
+                <div className="service-label">
+                    <div className="service-color fullset"></div>
+                    <span>Fullset</span>
+                </div>
+                <div className="service-label">
+                    <div className="service-color fill"></div>
+                    <span>Fill</span>
+                </div>
+                <div className="service-label">
+                    <div className="service-color dipping-powder"></div>
+                    <span>Dipping Powder</span>
+                </div>
+                <div className="service-label">
                     <div className="service-color gel-x"></div>
                     <span>Gel X</span>
                 </div>
                 <div className="service-label">
-                    <div className="service-color full-set"></div>
-                    <span>Full-Set</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color massage"></div>
-                    <span>Massage</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color hair-coloring"></div>
-                    <span>Hair Coloring</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color beard-grooming"></div>
-                    <span>Beard Grooming</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color blow-dry"></div>
-                    <span>Blow Dry</span>
+                    <div className="service-color kids-pedicure"></div>
+                    <span>Kid's Pedicure</span>
                 </div>
             </div>
         </div>
