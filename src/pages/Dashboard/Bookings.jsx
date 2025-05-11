@@ -16,6 +16,8 @@ const Bookings = () => {
     const [viewMode, setViewMode] = useState('week'); // week, day, month
     const [selectedStaff, setSelectedStaff] = useState('all');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isStaffDropdownOpen, setIsStaffDropdownOpen] = useState(false);
+    const [staffSearchTerm, setStaffSearchTerm] = useState('');
     const { role, workerId } = useAuth();
     //Get start and end dates for the current view
     const getStartAndEndDates = useCallback(() => {
@@ -44,6 +46,23 @@ const Bookings = () => {
         };
     }, [currentDate, viewMode]);
 
+    // Add click outside handler
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            const dropdown = document.querySelector('.staff-dropdown');
+            if (dropdown && !dropdown.contains(event.target)) {
+                setIsStaffDropdownOpen(false);
+            }
+        };
+
+        if (isStaffDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isStaffDropdownOpen]);
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -287,6 +306,15 @@ const Bookings = () => {
         return Object.entries(staffMap).map(([id, name]) => ({ _id: id, name }));
     };
 
+    // Filter staff based on search term
+    const filteredStaff = () => {
+        const staff = getUniqueStaff();
+        if (!staffSearchTerm) return staff;
+        return staff.filter(worker =>
+            worker.name.toLowerCase().includes(staffSearchTerm.toLowerCase())
+        );
+    };
+
     if (loading) return (
         <div className="booking-loading">
             <div>Loading bookings...</div>
@@ -354,18 +382,52 @@ const Bookings = () => {
                 </div>
                 {role === 'admin' && viewMode !== 'day' && (
                     <div className="staff-dropdown">
-                        <select
-                            value={selectedStaff}
-                            onChange={(e) => setSelectedStaff(e.target.value)}
+                        <div
+                            className="staff-dropdown-header"
+                            onClick={() => setIsStaffDropdownOpen(!isStaffDropdownOpen)}
                         >
-                            <option value="all">All Staff</option>
-                            {staff.map(worker => (
-                                <option key={worker._id} value={worker._id}>
-                                    {worker.name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>)}
+                            <span>{selectedStaff === 'all' ? 'All Staff' : staff.find(s => s._id === selectedStaff)?.name || 'All Staff'}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                                <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                        </div>
+                        {isStaffDropdownOpen && (
+                            <div className="staff-dropdown-content">
+                                <div className="staff-search">
+                                    <input
+                                        type="text"
+                                        placeholder="Search staff..."
+                                        value={staffSearchTerm}
+                                        onChange={(e) => setStaffSearchTerm(e.target.value)}
+                                    />
+                                </div>
+                                <div className="staff-options">
+                                    <div
+                                        className={`staff-option ${selectedStaff === 'all' ? 'selected' : ''}`}
+                                        onClick={() => {
+                                            setSelectedStaff('all');
+                                            setIsStaffDropdownOpen(false);
+                                        }}
+                                    >
+                                        All Staff
+                                    </div>
+                                    {filteredStaff().map(worker => (
+                                        <div
+                                            key={worker._id}
+                                            className={`staff-option ${selectedStaff === worker._id ? 'selected' : ''}`}
+                                            onClick={() => {
+                                                setSelectedStaff(worker._id);
+                                                setIsStaffDropdownOpen(false);
+                                            }}
+                                        >
+                                            {worker.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 <button className="add-booking-btn" onClick={() => setIsModalOpen(true)}>
                     + Add Booking

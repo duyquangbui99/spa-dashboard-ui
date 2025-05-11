@@ -37,7 +37,9 @@ const WeekView = ({
             <div className="calendar-grid">
                 <div className="calendar-grid-scroll">
                     <div className="time-column">
-                        <div className="day-header"></div>
+                        <div className="day-header">
+                            <p>Time</p>
+                        </div>
                         {timeSlots.map((time, index) => (
                             <div className="time-slot" key={index}>
                                 <span className="time-label">
