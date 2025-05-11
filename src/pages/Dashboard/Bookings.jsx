@@ -380,7 +380,7 @@ const Bookings = () => {
                         Month
                     </button>
                 </div>
-                {role === 'admin' && viewMode !== 'day' && (
+                {role === 'admin' && (
                     <div className="staff-dropdown">
                         <div
                             className="staff-dropdown-header"
