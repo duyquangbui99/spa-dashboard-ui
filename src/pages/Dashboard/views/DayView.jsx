@@ -50,74 +50,75 @@ const DayView = ({
                     booking{currentDayBookings.length !== 1 ? 's' : ''} on {formatDateHeader(currentDate)}
                 </div>
             )}
-            <div className="day-view-header">
-                <div className="day-view-time-header">Time</div>
-                {staffMembers.map(staff => (
-                    <div key={staff._id} className="day-view-staff-header">
-                        {staff.name}
-                    </div>
-                ))}
-            </div>
-
-            <div className="day-view-content">
-                <div className="day-view-time-column">
-                    {timeSlots.map((time, index) => (
-                        <div className="day-view-time-slot" key={index}>
-                            <span className="day-view-time-label">
-                                {formatTime(new Date(time))}
-                            </span>
+            <div className="day-view-table">
+                <div className="day-view-header">
+                    <div className="day-view-time-header">Time</div>
+                    {staffMembers.map(staff => (
+                        <div key={staff._id} className="day-view-staff-header">
+                            {staff.name}
                         </div>
                     ))}
                 </div>
-
-                {staffMembers.map(staff => (
-                    <div key={staff._id} className="day-view-staff-column">
-                        {timeSlots.map((time, timeIndex) => {
-                            const staffBookings = getStaffBookings(time, staff._id);
-
-                            staffBookings.forEach((booking, index) => {
-                                const position = getBookingPosition(booking, staffBookings);
-                                booking.row = position.row;
-                            });
-
-                            return (
-                                <div className="day-view-slot" key={timeIndex}>
-                                    {staffBookings.map((booking, bookingIndex) => {
-                                        const mainService = booking.serviceIds[0]?.name || '';
-                                        const serviceClass = getServiceClass(mainService);
-                                        const position = getBookingPosition(booking, staffBookings);
-
-                                        return (
-                                            <div
-                                                key={booking._id}
-                                                className={`day-view-booking-card ${serviceClass}`}
-                                                style={{
-                                                    height: position.height,
-                                                    width: 'calc(98% - 16px)',
-                                                    left: '1%',
-                                                    top: position.top,
-                                                    position: 'absolute',
-                                                    zIndex: bookingIndex + 1
-                                                }}
-                                                title={`${booking.customerName} - ${booking.serviceIds.map(s => s.name).join(', ')}`}
-                                            >
-                                                <div className="day-view-booking-time">
-                                                    {formatTime(booking.startTime)}
-                                                </div>
-                                                <div className="day-view-booking-customer">
-                                                    {booking.customerName}
-                                                </div>
-                                                <div className="day-view-booking-service">
-                                                    {booking.serviceIds.map(s => s.name).join(', ')}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            );
-                        })}
+                <div className="day-view-content">
+                    <div className="day-view-time-column">
+                        {timeSlots.map((time, index) => (
+                            <div className="day-view-time-slot" key={index}>
+                                <span className="day-view-time-label">
+                                    {formatTime(new Date(time))}
+                                </span>
+                            </div>
+                        ))}
                     </div>
-                ))}
+
+                    {staffMembers.map(staff => (
+                        <div key={staff._id} className="day-view-staff-column">
+                            {timeSlots.map((time, timeIndex) => {
+                                const staffBookings = getStaffBookings(time, staff._id);
+
+                                staffBookings.forEach((booking, index) => {
+                                    const position = getBookingPosition(booking, staffBookings);
+                                    booking.row = position.row;
+                                });
+
+                                return (
+                                    <div className="day-view-slot" key={timeIndex}>
+                                        {staffBookings.map((booking, bookingIndex) => {
+                                            const mainService = booking.serviceIds[0]?.name || '';
+                                            const serviceClass = getServiceClass(mainService);
+                                            const position = getBookingPosition(booking, staffBookings);
+
+                                            return (
+                                                <div
+                                                    key={booking._id}
+                                                    className={`day-view-booking-card ${serviceClass}`}
+                                                    style={{
+                                                        height: position.height,
+                                                        width: 'calc(98% - 16px)',
+                                                        left: '1%',
+                                                        top: position.top,
+                                                        position: 'absolute',
+                                                        zIndex: bookingIndex + 1
+                                                    }}
+                                                    title={`${booking.customerName} - ${booking.serviceIds.map(s => s.name).join(', ')}`}
+                                                >
+                                                    <div className="day-view-booking-time">
+                                                        {formatTime(booking.startTime)}
+                                                    </div>
+                                                    <div className="day-view-booking-customer">
+                                                        {booking.customerName}
+                                                    </div>
+                                                    <div className="day-view-booking-service">
+                                                        {booking.serviceIds.map(s => s.name).join(', ')}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

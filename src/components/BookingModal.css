@@ -171,18 +171,20 @@ select:focus {
 }
 
 .time-slot {
-    padding: 0.5rem;
+    height: 100px;
+    border-bottom: 1px solid var(--color-button-border);
+    padding: 8px;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: var(--color-sidebar-bg);
     text-align: center;
-    border: 1px solid var(--color-button-border);
-    border-radius: 6px;
-    cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.9rem;
 }
 
-.time-slot:not(.disabled):hover {
-    background: var(--color-calendar-hover);
-}
+
 
 .time-slot.selected {
     background: var(--color-calendar-selected);

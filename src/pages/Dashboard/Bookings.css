@@ -70,7 +70,7 @@
     min-width: 200px;
 }
 
-.staff-dropdown select {
+.staff-dropdown-header {
     width: 100%;
     padding: 8px 12px;
     border: 1px solid var(--color-button-border);
@@ -80,32 +80,101 @@
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
-    appearance: none;
-    padding-right: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
 }
 
-.staff-dropdown::after {
-    content: '';
+.staff-dropdown-header:hover {
+    border-color: var(--color-accent);
+}
+
+.staff-dropdown-header svg {
+    transition: transform 0.2s ease;
+}
+
+.staff-dropdown-header:hover svg {
+    transform: rotate(90deg);
+}
+
+.staff-dropdown-content {
     position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid var(--color-primary-text);
-    pointer-events: none;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background-color: var(--color-background);
+    border: 1px solid var(--color-button-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    overflow: hidden;
 }
 
-.staff-dropdown select:hover {
-    border-color: var(--color-calendar-selected);
+.staff-search {
+    padding: 8px;
+    border-bottom: 1px solid var(--color-button-border);
 }
 
-.staff-dropdown select:focus {
+.staff-search input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--color-button-border);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--color-primary-text);
+    background-color: var(--color-button);
+    transition: all 0.2s ease;
+}
+
+.staff-search input:focus {
     outline: none;
-    border-color: var(--color-calendar-selected);
-    box-shadow: 0 0 0 2px var(--color-calendar-hover);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px rgba(var(--color-accent-rgb), 0.1);
+}
+
+.staff-search input::placeholder {
+    color: var(--color-muted-text);
+}
+
+.staff-options {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.staff-option {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: var(--color-primary-text);
+}
+
+.staff-option:hover {
+    background-color: var(--color-sidebar-hover);
+}
+
+.staff-option.selected {
+    background-color: var(--color-accent);
+    color: white;
+}
+
+/* Scrollbar styles for staff options */
+.staff-options::-webkit-scrollbar {
+    width: 6px;
+}
+
+.staff-options::-webkit-scrollbar-track {
+    background: var(--color-sidebar-bg);
+}
+
+.staff-options::-webkit-scrollbar-thumb {
+    background-color: var(--color-button-border);
+    border-radius: 3px;
+}
+
+.staff-options::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-accent);
 }
 
 .date-navigation {
@@ -137,9 +206,9 @@
 }
 
 .nav-btn:hover {
-    background-color: var(--color-calendar-hover);
-    border-color: var(--color-calendar-selected);
-    color: var(--color-calendar-selected);
+    background-color: var(--color-sidebar-bg);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
 }
 
 .view-options {
@@ -165,8 +234,6 @@
 
 .view-btn.active {
     background-color: var(--color-button);
-    color: var(--color-calendar-selected);
-    box-shadow: var(--shadow-sm);
 }
 
 .view-btn:hover:not(.active) {
@@ -750,10 +817,17 @@
     flex: 1;
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid var(--color-button-border);
     background-color: var(--color-background);
     min-width: 0;
     /* Allows container to shrink */
+}
+
+.day-view-table {
+    border: 1px solid var(--color-button-border);
+    border-radius: 12px;
+    overflow: auto;
+    flex: 1;
+    min-height: 0;
 }
 
 .day-view-header {
