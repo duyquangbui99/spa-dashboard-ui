@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import TimeslotBookingsModal from '../../../components/TimeslotBookingsModal';
 
 const WeekView = ({
     bookings,
@@ -12,6 +13,14 @@ const WeekView = ({
     formatTime,
     formatShortDate
 }) => {
+    const [selectedTimeslot, setSelectedTimeslot] = useState(null);
+    const [selectedDay, setSelectedDay] = useState(null);
+
+    const handleTimeslotClick = (day, time) => {
+        setSelectedDay(day);
+        setSelectedTimeslot(time);
+    };
+
     const getCurrentWeekBookings = () => {
         return bookings.filter(booking => {
             if (selectedStaff !== 'all' && booking.workerId?._id !== selectedStaff) {
@@ -34,76 +43,86 @@ const WeekView = ({
                     booking{currentWeekBookings.length !== 1 ? 's' : ''} this week
                 </div>
             )}
-            <div className="calendar-grid">
-                <div className="calendar-grid-scroll">
-                    <div className="time-column">
-                        <div className="day-header">
-                            <p>Time</p>
-                        </div>
-                        {timeSlots.map((time, index) => (
-                            <div className="time-slot" key={index}>
-                                <span className="time-label">
-                                    {formatTime(new Date(time))}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-
-                    {weekDays.map((day, dayIndex) => (
-                        <div className="day-column" key={dayIndex}>
-                            <div className="day-header">
-                                {formatShortDate(day)}
-                            </div>
-
-                            {timeSlots.map((time, timeIndex) => {
-                                let slotBookings = getBookingsForSlot(day, time);
-
-                                if (selectedStaff !== 'all') {
-                                    slotBookings = slotBookings.filter(
-                                        booking => booking.workerId?._id === selectedStaff
-                                    );
-                                }
-
-                                slotBookings.forEach((booking, index) => {
-                                    const position = getBookingPosition(booking, slotBookings);
-                                    booking.row = position.row;
-                                });
-
-                                return (
-                                    <div className="day-time-slot" key={timeIndex}>
-                                        {slotBookings.map((booking, bookingIndex) => {
-                                            const mainService = booking.serviceIds[0]?.name || '';
-                                            const serviceClass = getServiceClass(mainService);
-                                            const position = getBookingPosition(booking, slotBookings);
-
-                                            return (
-                                                <div
-                                                    key={booking._id}
-                                                    className={`booking-card ${serviceClass}`}
-                                                    style={{
-                                                        height: position.height,
-                                                        width: '98%',
-                                                        left: '1%',
-                                                        top: position.top,
-                                                        position: 'absolute',
-                                                        zIndex: bookingIndex + 1
-                                                    }}
-                                                >
-                                                    <div className="booking-time">{formatTime(booking.startTime)}</div>
-                                                    <div className="booking-customer">{booking.customerName}</div>
-                                                    <div className="booking-service">
-                                                        {booking.serviceIds.map(s => s.name).join(', ')}
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                );
-                            })}
+            <div className="week-view-grid">
+                <div className="time-column">
+                    <div className="day-header">Time</div>
+                    {timeSlots.map((time, index) => (
+                        <div key={index} className="time-slot">
+                            <span className="time-label">
+                                {formatTime(new Date(time))}
+                            </span>
                         </div>
                     ))}
                 </div>
+
+                {weekDays.map((day, dayIndex) => (
+                    <div key={dayIndex} className="day-column">
+                        <div className="day-header">
+                            {formatShortDate(day)}
+                        </div>
+                        {timeSlots.map((time, timeIndex) => {
+                            let slotBookings = getBookingsForSlot(day, time);
+
+                            if (selectedStaff !== 'all') {
+                                slotBookings = slotBookings.filter(
+                                    booking => booking.workerId?._id === selectedStaff
+                                );
+                            }
+
+                            slotBookings.forEach((booking, index) => {
+                                const position = getBookingPosition(booking, slotBookings);
+                                booking.row = position.row;
+                            });
+
+                            return (
+                                <div
+                                    className="day-time-slot"
+                                    key={timeIndex}
+                                    onClick={() => handleTimeslotClick(day, time)}
+                                >
+                                    {slotBookings.map((booking, bookingIndex) => {
+                                        const mainService = booking.serviceIds[0]?.name || '';
+                                        const serviceClass = getServiceClass(mainService);
+                                        const position = getBookingPosition(booking, slotBookings);
+
+                                        return (
+                                            <div
+                                                key={booking._id}
+                                                className={`booking-card ${serviceClass}`}
+                                                style={{
+                                                    height: position.height,
+                                                    width: '98%',
+                                                    left: '1%',
+                                                    top: position.top,
+                                                    position: 'absolute',
+                                                    zIndex: bookingIndex + 1
+                                                }}
+                                                title={`${booking.customerName} - ${booking.serviceIds.map(s => s.name).join(', ')}`}
+                                            >
+                                                <div className="booking-time">{formatTime(booking.startTime)}</div>
+                                                <div className="booking-customer">{booking.customerName}</div>
+                                                <div className="booking-service">
+                                                    {booking.serviceIds.map(s => s.name).join(', ')}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })}
+                    </div>
+                ))}
             </div>
+
+            <TimeslotBookingsModal
+                isOpen={selectedTimeslot !== null}
+                onClose={() => {
+                    setSelectedTimeslot(null);
+                    setSelectedDay(null);
+                }}
+                bookings={selectedTimeslot ? getBookingsForSlot(selectedDay, selectedTimeslot) : []}
+                formatTime={formatTime}
+            />
         </div>
     );
 };

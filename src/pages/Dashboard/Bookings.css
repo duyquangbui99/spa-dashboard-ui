@@ -291,7 +291,7 @@
     position: sticky;
     left: 0;
     z-index: 2;
-    width: 80px;
+    width: 100%;
 }
 
 .time-slot {
@@ -326,7 +326,7 @@
     font-size: 14px;
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 2000;
 }
 
 .time-column .day-header {
@@ -367,11 +367,12 @@
     min-height: 20px;
     width: calc(100% - 2px);
     left: 1px;
+    z-index: 5;
 }
 
 .booking-card:hover {
     transform: scale(1.01);
-    z-index: 1000 !important;
+    z-index: 15 !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
@@ -765,9 +766,6 @@
         grid-template-columns: 60px repeat(7, 1fr);
     }
 
-    .time-column {
-        width: 60px;
-    }
 
     .time-slot {
         height: 80px;
@@ -840,10 +838,6 @@
         grid-template-columns: 50px repeat(7, 1fr);
     }
 
-    .time-column {
-        width: 50px;
-    }
-
     .time-slot {
         height: 70px;
     }
@@ -914,9 +908,7 @@
         grid-template-columns: 45px repeat(7, 1fr);
     }
 
-    .time-column {
-        width: 45px;
-    }
+
 
     .time-slot {
         height: 60px;
@@ -1386,4 +1378,146 @@
 .day-view-booking-card.kids-pedicure .day-view-booking-service {
     color: white !important;
     opacity: 1 !important;
+}
+
+.week-view-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.week-view-grid {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    border: 1px solid var(--color-button-border);
+    border-radius: 12px;
+    overflow: auto;
+    background-color: var(--color-background);
+    height: calc(100vh - 200px);
+    min-height: 0;
+    position: relative;
+}
+
+.week-view-grid .time-column {
+    background-color: var(--color-sidebar-bg);
+    border-right: 1px solid var(--color-button-border);
+    position: sticky;
+    left: 0;
+    z-index: 20;
+}
+
+.week-view-grid .day-column {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--color-button-border);
+    min-width: 150px;
+    position: relative;
+}
+
+.week-view-grid .day-column:last-child {
+    border-right: none;
+}
+
+.week-view-grid .day-header {
+    background-color: var(--color-sidebar-bg);
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--color-button-border);
+    font-weight: 600;
+    color: var(--color-primary-text);
+    font-size: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.week-view-grid .time-slot {
+    position: relative;
+    height: 100px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: var(--color-sidebar-bg);
+    z-index: 1;
+}
+
+.week-view-grid .time-label {
+    position: absolute;
+    top: -10px;
+    right: 8px;
+    background-color: var(--color-sidebar-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--color-muted-text);
+    font-weight: 500;
+    z-index: 2;
+}
+
+.week-view-grid .day-time-slot {
+    position: relative;
+    height: 100px;
+    border-bottom: 1px solid var(--color-button-border);
+    background: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    z-index: 1;
+}
+
+.week-view-grid .day-time-slot:hover {
+    background-color: var(--color-sidebar-hover);
+}
+
+/* Add scrollbar styles */
+.week-view-grid::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.week-view-grid::-webkit-scrollbar-track {
+    background: var(--color-sidebar-bg);
+    border-radius: 4px;
+}
+
+.week-view-grid::-webkit-scrollbar-thumb {
+    background-color: var(--color-button-border);
+    border-radius: 4px;
+}
+
+.week-view-grid::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-accent);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .week-view-grid {
+        height: calc(100vh - 180px);
+    }
+
+    .week-view-grid .day-column {
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .week-view-grid {
+        height: calc(100vh - 160px);
+    }
+
+    .week-view-grid .day-column {
+        min-width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .week-view-grid {
+        height: calc(100vh - 140px);
+    }
+
+    .week-view-grid .day-column {
+        min-width: 80px;
+    }
 }
