@@ -6,10 +6,7 @@
 }
 
 .bookings-container {
-    background-color: var(--color-background);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: var(--shadow-md);
+    background-color: white;
     max-width: 100%;
     overflow: hidden;
     height: calc(100vh - 48px);
@@ -51,9 +48,8 @@
 }
 
 .add-booking-btn:hover {
-    background-color: var(--color-calendar-selected);
     transform: translateY(-1px);
-    box-shadow: var(--shadow-md);
+    opacity: 0.9;
 }
 
 .controls-wrapper {
@@ -290,18 +286,6 @@
     position: sticky;
     left: 0;
     z-index: 2;
-}
-
-.time-slot {
-    height: 100px;
-    border-bottom: 1px solid var(--color-button-border);
-    padding: 8px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    color: var(--color-muted-text);
-    font-size: 13px;
-    position: relative;
 }
 
 .time-label {
