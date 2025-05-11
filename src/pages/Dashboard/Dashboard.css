@@ -9,11 +9,11 @@
 .main-content {
     margin-left: 250px;
     /* Match sidebar width */
-    padding: 24px;
+    padding: 2rem;
     height: 100vh;
     overflow-y: auto;
     flex: 1;
-    background-color: #f9fafb;
+    background-color: white;
     transition: margin-left 0.3s ease, padding-top 0.3s ease;
 }
 
