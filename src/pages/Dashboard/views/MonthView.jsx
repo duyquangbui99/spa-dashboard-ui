@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
+import TimeslotBookingsModal from '../../../components/TimeslotBookingsModal';
 
 const MonthView = ({
     bookings,
     currentDate,
     selectedStaff,
     formatTime,
-    getServiceClass
+    getServiceClass,
+    workers
 }) => {
+    const [selectedDay, setSelectedDay] = useState(null);
+
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();
         const month = date.getMonth();
@@ -106,19 +110,60 @@ const MonthView = ({
                     ].filter(Boolean).join(' ');
 
                     return (
-                        <div key={index} className={cellClasses}>
+                        <div key={index} className={cellClasses} onClick={() => setSelectedDay(day)} style={{ cursor: 'pointer' }}>
                             <div className="month-day-number">
                                 {day.getDate()}
                             </div>
                             {dayBookings.map(booking => {
-                                const mainService = booking.serviceIds[0]?.name || '';
+                                let mainService = '';
+                                let serviceDisplay = '';
+                                if (booking.serviceIds?.[0]?.name) {
+                                    mainService = booking.serviceIds[0].name;
+                                    serviceDisplay = booking.serviceIds.map(s => s.name).join(', ');
+                                } else if (booking.services?.[0]?.serviceId) {
+                                    const worker = workers && (workers.find(w => w._id === (booking.workerId?._id || booking.workerId)));
+                                    if (worker) {
+                                        serviceDisplay = booking.services.map(s => {
+                                            let name = '';
+                                            if (typeof s.serviceId === 'object' && s.serviceId !== null) {
+                                                name = s.serviceId.name || s.serviceId._id || '[unknown]';
+                                            } else {
+                                                const svc = worker.services.find(ws => ws._id === s.serviceId);
+                                                name = svc ? svc.name : s.serviceId;
+                                            }
+                                            return `${name} x ${s.quantity || 1}`;
+                                        }).join(', ');
+                                        let firstName = '';
+                                        if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
+                                            firstName = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
+                                        } else {
+                                            const svc = worker.services.find(ws => ws._id === booking.services[0].serviceId);
+                                            if (svc) firstName = svc.name;
+                                        }
+                                        if (firstName) mainService = firstName;
+                                    } else {
+                                        serviceDisplay = booking.services.map(s => {
+                                            let name = '';
+                                            if (typeof s.serviceId === 'object' && s.serviceId !== null) {
+                                                name = s.serviceId.name || s.serviceId._id || '[unknown]';
+                                            } else {
+                                                name = s.serviceId;
+                                            }
+                                            return `${name} x ${s.quantity || 1}`;
+                                        }).join(', ');
+                                        if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
+                                            mainService = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
+                                        } else {
+                                            mainService = booking.services[0].serviceId;
+                                        }
+                                    }
+                                }
                                 const serviceClass = getServiceClass(mainService);
-
                                 return (
                                     <div
                                         key={booking._id}
                                         className={`month-booking-card ${serviceClass}`}
-                                        title={`${booking.customerName} - ${booking.serviceIds.map(s => s.name).join(', ')}`}
+                                        title={`${booking.customerName} - ${serviceDisplay}`}
                                     >
                                         <div className="month-booking-time">
                                             {formatTime(booking.startTime)}
@@ -127,7 +172,7 @@ const MonthView = ({
                                             {booking.customerName}
                                         </div>
                                         <div className="month-booking-service">
-                                            {booking.serviceIds.map(s => s.name).join(', ')}
+                                            {serviceDisplay}
                                         </div>
                                     </div>
                                 );
@@ -136,6 +181,12 @@ const MonthView = ({
                     );
                 })}
             </div>
+            <TimeslotBookingsModal
+                isOpen={!!selectedDay}
+                onClose={() => setSelectedDay(null)}
+                bookings={selectedDay ? getBookingsForDay(selectedDay) : []}
+                formatTime={formatTime}
+            />
         </div>
     );
 };

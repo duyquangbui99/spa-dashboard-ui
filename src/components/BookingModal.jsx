@@ -203,18 +203,7 @@ const BookingModal = ({ isOpen, onClose }) => {
         );
     };
 
-    const getServicesByCategories = () => {
-        if (!selectedWorker || selectedCategories.length === 0) return [];
-        const worker = workers.find(w => w._id === selectedWorker);
-        return worker?.services.filter(s => selectedCategories.includes(s.categoryId)) || [];
-    };
 
-    const getAddOns = () => {
-        if (!selectedWorker || selectedServices.length === 0) return [];
-        const worker = workers.find(w => w._id === selectedWorker);
-        const addOnCategory = categories.find(c => c.name.toLowerCase().includes('add-on'));
-        return addOnCategory ? worker?.services.filter(s => s.categoryId === addOnCategory._id) || [] : [];
-    };
 
     const handleNextStep = () => {
         if (currentStep < 6) {
@@ -228,10 +217,7 @@ const BookingModal = ({ isOpen, onClose }) => {
         }
     };
 
-    const handleAddMoreServices = () => {
-        setCurrentStep(2);
-        setShowAddMore(false);
-    };
+
 
     const resetForm = () => {
         setSelectedWorker(null);
@@ -329,12 +315,18 @@ const BookingModal = ({ isOpen, onClose }) => {
                 offset: localDateTime.getTimezoneOffset()
             });
 
+            const servicesWithQuantities = selectedServices.map(id => ({
+                serviceId: id,
+                quantity: serviceQuantities[id] || 1
+            }));
+
+
             const res = await axios.post('/api/bookings', {
                 customerName: customer.name,
                 customerPhone: customer.phone,
                 customerEmail: customer.email,
                 workerId: selectedWorker,
-                serviceIds: selectedServices,
+                services: servicesWithQuantities,
                 startTime: utcDateTime.toISOString(),
             });
 
@@ -351,14 +343,7 @@ const BookingModal = ({ isOpen, onClose }) => {
         }
     };
 
-    const getTotalDuration = useCallback(() => {
-        if (!selectedWorker || selectedServices.length === 0) return 0;
-        const worker = workers.find(w => w._id === selectedWorker);
-        return selectedServices.reduce((acc, id) => {
-            const svc = worker.services.find(s => s._id === id);
-            return acc + (svc?.duration || 0);
-        }, 0);
-    }, [selectedWorker, selectedServices, workers]);
+
 
     const getTotalPrice = useCallback(() => {
         if (!selectedWorker || selectedServices.length === 0) return 0;

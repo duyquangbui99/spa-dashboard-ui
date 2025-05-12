@@ -11,7 +11,8 @@ const WeekView = ({
     getBookingPosition,
     getServiceClass,
     formatTime,
-    formatShortDate
+    formatShortDate,
+    workers
 }) => {
     const [selectedTimeslot, setSelectedTimeslot] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
@@ -81,7 +82,51 @@ const WeekView = ({
                                     onClick={() => handleTimeslotClick(day, time)}
                                 >
                                     {slotBookings.map((booking, bookingIndex) => {
-                                        const mainService = booking.serviceIds[0]?.name || '';
+                                        let mainService = '';
+                                        let serviceDisplay = '';
+                                        if (booking.serviceIds?.[0]?.name) {
+                                            mainService = booking.serviceIds[0].name;
+                                            serviceDisplay = booking.serviceIds.map(s => s.name).join(', ');
+                                        } else if (booking.services?.[0]?.serviceId) {
+                                            // Look up service names and quantities from worker
+                                            const worker = workers.find(w => w._id === (booking.workerId?._id || booking.workerId));
+                                            if (worker) {
+                                                serviceDisplay = booking.services.map(s => {
+                                                    let name = '';
+                                                    if (typeof s.serviceId === 'object' && s.serviceId !== null) {
+                                                        name = s.serviceId.name || s.serviceId._id || '[unknown]';
+                                                    } else {
+                                                        const svc = worker.services.find(ws => ws._id === s.serviceId);
+                                                        name = svc ? svc.name : s.serviceId;
+                                                    }
+                                                    return `${name} x ${s.quantity || 1}`;
+                                                }).join(', ');
+                                                // Use the first service name for color
+                                                let firstName = '';
+                                                if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
+                                                    firstName = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
+                                                } else {
+                                                    const svc = worker.services.find(ws => ws._id === booking.services[0].serviceId);
+                                                    if (svc) firstName = svc.name;
+                                                }
+                                                if (firstName) mainService = firstName;
+                                            } else {
+                                                serviceDisplay = booking.services.map(s => {
+                                                    let name = '';
+                                                    if (typeof s.serviceId === 'object' && s.serviceId !== null) {
+                                                        name = s.serviceId.name || s.serviceId._id || '[unknown]';
+                                                    } else {
+                                                        name = s.serviceId;
+                                                    }
+                                                    return `${name} x ${s.quantity || 1}`;
+                                                }).join(', ');
+                                                if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
+                                                    mainService = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
+                                                } else {
+                                                    mainService = booking.services[0].serviceId;
+                                                }
+                                            }
+                                        }
                                         const serviceClass = getServiceClass(mainService);
                                         const position = getBookingPosition(booking, slotBookings);
 
@@ -97,12 +142,12 @@ const WeekView = ({
                                                     position: 'absolute',
                                                     zIndex: bookingIndex + 1
                                                 }}
-                                                title={`${booking.customerName} - ${booking.serviceIds.map(s => s.name).join(', ')}`}
+                                                title={`${booking.customerName} - ${serviceDisplay}`}
                                             >
                                                 <div className="booking-time">{formatTime(booking.startTime)}</div>
                                                 <div className="booking-customer">{booking.customerName}</div>
                                                 <div className="booking-service">
-                                                    {booking.serviceIds.map(s => s.name).join(', ')}
+                                                    {serviceDisplay}
                                                 </div>
                                             </div>
                                         );

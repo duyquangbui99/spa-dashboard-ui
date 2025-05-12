@@ -10,6 +10,7 @@ import BookingModal from '../../components/BookingModal';
 
 const Bookings = () => {
     const [bookings, setBookings] = useState([]);
+    const [workers, setWorkers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -114,6 +115,18 @@ const Bookings = () => {
         fetchBookings();
     }, [getStartAndEndDates, role, workerId]);
 
+    useEffect(() => {
+        // Fetch workers for service name lookup
+        const fetchWorkers = async () => {
+            try {
+                const res = await axios.get('/api/workers');
+                setWorkers(res.data);
+            } catch (err) {
+                console.error('Failed to fetch workers', err);
+            }
+        };
+        fetchWorkers();
+    }, []);
 
     // Get start of the week (Monday)
     const getWeekStart = (date) => {
@@ -150,19 +163,15 @@ const Bookings = () => {
         });
     };
 
-    // Get worker initials
-    /*const getInitials = (name) => {
-        if (!name) return '';
-        return name
-            .split(' ')
-            .map((n) => n[0])
-            .join('')
-            .toUpperCase();
-    };*/
+
 
     // Get service class for styling
     const getServiceClass = (serviceName) => {
-        if (!serviceName) return '';
+        // Ensure serviceName is a string
+        if (!serviceName || typeof serviceName !== 'string') {
+            return '';
+        }
+
         return serviceName
             .toLowerCase()
             .replace(/['"]/g, '') // remove apostrophes and quotes
@@ -448,6 +457,7 @@ const Bookings = () => {
                     getServiceClass={getServiceClass}
                     formatTime={formatTime}
                     formatShortDate={formatShortDate}
+                    workers={workers}
                 />
             )}
             {/* Day view */}

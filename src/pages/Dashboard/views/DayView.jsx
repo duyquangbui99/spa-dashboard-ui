@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import TimeslotBookingsModal from '../../../components/TimeslotBookingsModal';
 
 const DayView = ({
     bookings,
@@ -9,7 +10,8 @@ const DayView = ({
     getBookingPosition,
     getServiceClass,
     formatTime,
-    formatDateHeader
+    formatDateHeader,
+    workers
 }) => {
     // Get unique staff members from bookings
     const getUniqueStaff = () => {
@@ -40,6 +42,15 @@ const DayView = ({
     const getStaffBookings = (timeSlot, staffId) => {
         let slotBookings = getBookingsForSlot(currentDate, timeSlot);
         return slotBookings.filter(booking => booking.workerId?._id === staffId);
+    };
+
+    // Modal state
+    const [selectedTimeslot, setSelectedTimeslot] = useState(null);
+    const [selectedStaffColumn, setSelectedStaffColumn] = useState(null);
+
+    const handleTimeslotClick = (time, staffId) => {
+        setSelectedTimeslot(time);
+        setSelectedStaffColumn(staffId);
     };
 
     return (
@@ -81,9 +92,56 @@ const DayView = ({
                                 });
 
                                 return (
-                                    <div className="day-view-slot" key={timeIndex}>
+                                    <div
+                                        className="day-view-slot"
+                                        key={timeIndex}
+                                        onClick={() => handleTimeslotClick(time, staff._id)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         {staffBookings.map((booking, bookingIndex) => {
-                                            const mainService = booking.serviceIds[0]?.name || '';
+                                            let mainService = '';
+                                            let serviceDisplay = '';
+                                            if (booking.serviceIds?.[0]?.name) {
+                                                mainService = booking.serviceIds[0].name;
+                                                serviceDisplay = booking.serviceIds.map(s => s.name).join(', ');
+                                            } else if (booking.services?.[0]?.serviceId) {
+                                                const worker = workers && (workers.find(w => w._id === (booking.workerId?._id || booking.workerId)));
+                                                if (worker) {
+                                                    serviceDisplay = booking.services.map(s => {
+                                                        let name = '';
+                                                        if (typeof s.serviceId === 'object' && s.serviceId !== null) {
+                                                            name = s.serviceId.name || s.serviceId._id || '[unknown]';
+                                                        } else {
+                                                            const svc = worker.services.find(ws => ws._id === s.serviceId);
+                                                            name = svc ? svc.name : s.serviceId;
+                                                        }
+                                                        return `${name} x ${s.quantity || 1}`;
+                                                    }).join(', ');
+                                                    let firstName = '';
+                                                    if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
+                                                        firstName = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
+                                                    } else {
+                                                        const svc = worker.services.find(ws => ws._id === booking.services[0].serviceId);
+                                                        if (svc) firstName = svc.name;
+                                                    }
+                                                    if (firstName) mainService = firstName;
+                                                } else {
+                                                    serviceDisplay = booking.services.map(s => {
+                                                        let name = '';
+                                                        if (typeof s.serviceId === 'object' && s.serviceId !== null) {
+                                                            name = s.serviceId.name || s.serviceId._id || '[unknown]';
+                                                        } else {
+                                                            name = s.serviceId;
+                                                        }
+                                                        return `${name} x ${s.quantity || 1}`;
+                                                    }).join(', ');
+                                                    if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
+                                                        mainService = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
+                                                    } else {
+                                                        mainService = booking.services[0].serviceId;
+                                                    }
+                                                }
+                                            }
                                             const serviceClass = getServiceClass(mainService);
                                             const position = getBookingPosition(booking, staffBookings);
 
@@ -99,7 +157,7 @@ const DayView = ({
                                                         position: 'absolute',
                                                         zIndex: bookingIndex + 1
                                                     }}
-                                                    title={`${booking.customerName} - ${booking.serviceIds.map(s => s.name).join(', ')}`}
+                                                    title={`${booking.customerName} - ${serviceDisplay}`}
                                                 >
                                                     <div className="day-view-booking-time">
                                                         {formatTime(booking.startTime)}
@@ -108,7 +166,7 @@ const DayView = ({
                                                         {booking.customerName}
                                                     </div>
                                                     <div className="day-view-booking-service">
-                                                        {booking.serviceIds.map(s => s.name).join(', ')}
+                                                        {serviceDisplay}
                                                     </div>
                                                 </div>
                                             );
@@ -120,6 +178,15 @@ const DayView = ({
                     ))}
                 </div>
             </div>
+            <TimeslotBookingsModal
+                isOpen={selectedTimeslot !== null}
+                onClose={() => {
+                    setSelectedTimeslot(null);
+                    setSelectedStaffColumn(null);
+                }}
+                bookings={selectedTimeslot && selectedStaffColumn ? getStaffBookings(selectedTimeslot, selectedStaffColumn) : []}
+                formatTime={formatTime}
+            />
         </div>
     );
 };
