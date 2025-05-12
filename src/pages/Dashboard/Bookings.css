@@ -368,68 +368,15 @@
     width: calc(100% - 2px);
     left: 1px;
     z-index: 5;
+    background-color: var(--color-background);
+    border-left: 4px solid;
+    color: var(--color-primary-text);
 }
 
 .booking-card:hover {
     transform: scale(1.01);
     z-index: 15 !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-}
-
-.booking-card.pedicure,
-.month-booking-card.pedicure,
-.day-view-booking-card.pedicure {
-    background-color: #FF9F9F;
-    border-left: 4px solid #FF7F7F;
-    color: #000;
-}
-
-.booking-card.manicure,
-.month-booking-card.manicure,
-.day-view-booking-card.manicure {
-    background-color: #FFB5E8;
-    border-left: 4px solid #FF99DD;
-    color: #000;
-}
-
-.booking-card.fullset,
-.month-booking-card.fullset,
-.day-view-booking-card.fullset {
-    background-color: #4169E1;
-    border-left: 4px solid #1E90FF;
-    color: white;
-}
-
-.booking-card.fill,
-.month-booking-card.fill,
-.day-view-booking-card.fill {
-    background-color: #98FB98;
-    border-left: 4px solid #77DD77;
-    color: #000;
-}
-
-.booking-card.dipping-powder,
-.month-booking-card.dipping-powder,
-.day-view-booking-card.dipping-powder {
-    background-color: #DDA0DD;
-    border-left: 4px solid #CC88CC;
-    color: #000;
-}
-
-.booking-card.gel-x,
-.month-booking-card.gel-x,
-.day-view-booking-card.gel-x {
-    background-color: #87CEEB;
-    border-left: 4px solid #6CB6D3;
-    color: #000;
-}
-
-.booking-card.kids-pedicure,
-.month-booking-card.kids-pedicure,
-.day-view-booking-card.kids-pedicure {
-    background-color: #FFB347;
-    border-left: 4px solid #FF9933;
-    color: white;
 }
 
 .booking-time,
@@ -471,18 +418,7 @@
     color: inherit;
 }
 
-/* For fullset cards, ensure child elements also have white text */
-.booking-card.fullset .booking-time,
-.booking-card.fullset .booking-customer,
-.booking-card.fullset .booking-service,
-.month-booking-card.fullset .month-booking-time,
-.month-booking-card.fullset .month-booking-customer,
-.month-booking-card.fullset .month-booking-service,
-.day-view-booking-card.fullset .day-view-booking-time,
-.day-view-booking-card.fullset .day-view-booking-customer,
-.day-view-booking-card.fullset .day-view-booking-service {
-    color: white !important;
-}
+
 
 .booking-loading,
 .booking-error {
@@ -522,34 +458,6 @@
     width: 16px;
     height: 16px;
     border-radius: 4px;
-}
-
-.service-color.pedicure {
-    background-color: #FF9F9F;
-}
-
-.service-color.manicure {
-    background-color: #FFB5E8;
-}
-
-.service-color.fullset {
-    background-color: #4169E1;
-}
-
-.service-color.fill {
-    background-color: #98FB98;
-}
-
-.service-color.dipping-powder {
-    background-color: #DDA0DD;
-}
-
-.service-color.gel-x {
-    background-color: #87CEEB;
-}
-
-.service-color.kids-pedicure {
-    background-color: #FFB347;
 }
 
 /* Common View Container Styles */
@@ -667,54 +575,6 @@
     box-shadow: var(--shadow-md);
 }
 
-/* Service-specific styles for month view */
-.month-booking-card.pedicure {
-    background: linear-gradient(to right, #FF9F9F, #FF7F7F);
-    border-left: 4px solid #FF7F7F;
-    color: #000;
-}
-
-.month-booking-card.manicure {
-    background: linear-gradient(to right, #FFB5E8, #FF99DD);
-    border-left: 4px solid #FF99DD;
-    color: #000;
-}
-
-.month-booking-card.fullset {
-    background: linear-gradient(to right, #4169E1, #1E90FF);
-    border-left: 4px solid #1E90FF;
-    color: white;
-}
-
-.month-booking-card.fullset .month-booking-time,
-.month-booking-card.fullset .month-booking-customer,
-.month-booking-card.fullset .month-booking-service {
-    color: white !important;
-}
-
-.month-booking-card.fill {
-    background: linear-gradient(to right, #98FB98, #77DD77);
-    border-left: 4px solid #77DD77;
-    color: #000;
-}
-
-.month-booking-card.dipping-powder {
-    background: linear-gradient(to right, #DDA0DD, #CC88CC);
-    border-left: 4px solid #CC88CC;
-    color: #000;
-}
-
-.month-booking-card.gel-x {
-    background: linear-gradient(to right, #87CEEB, #6CB6D3);
-    border-left: 4px solid #6CB6D3;
-    color: #000;
-}
-
-.month-booking-card.kids-pedicure {
-    background: linear-gradient(to right, #FFB347, #FF9933);
-    border-left: 4px solid #FF9933;
-    color: white;
-}
 
 .month-booking-time {
     font-weight: 600;
@@ -1106,48 +966,7 @@
     text-overflow: ellipsis;
 }
 
-/* Service-specific styles for day view */
-.day-view-booking-card.pedicure {
-    background: linear-gradient(to right, #FF9F9F, #FF7F7F);
-    border-left: 4px solid #FF7F7F;
-    color: #000;
-}
 
-.day-view-booking-card.manicure {
-    background: linear-gradient(to right, #FFB5E8, #FF99DD);
-    border-left: 4px solid #FF99DD;
-    color: #000;
-}
-
-.day-view-booking-card.fullset {
-    background: linear-gradient(to right, #4169E1, #1E90FF);
-    border-left: 4px solid #1E90FF;
-    color: white;
-}
-
-.day-view-booking-card.fill {
-    background: linear-gradient(to right, #98FB98, #77DD77);
-    border-left: 4px solid #77DD77;
-    color: #000;
-}
-
-.day-view-booking-card.dipping-powder {
-    background: linear-gradient(to right, #DDA0DD, #CC88CC);
-    border-left: 4px solid #CC88CC;
-    color: #000;
-}
-
-.day-view-booking-card.gel-x {
-    background: linear-gradient(to right, #87CEEB, #6CB6D3);
-    border-left: 4px solid #6CB6D3;
-    color: #000;
-}
-
-.day-view-booking-card.kids-pedicure {
-    background: linear-gradient(to right, #FFB347, #FF9933);
-    border-left: 4px solid #FF9933;
-    color: white;
-}
 
 /* Staff column styles */
 .day-view-staff-header {
@@ -1337,47 +1156,25 @@
     }
 }
 
-/* Ensure fullset text is always white */
-.booking-card.fullset,
-.month-booking-card.fullset,
-.day-view-booking-card.fullset,
-.booking-card.fullset *,
-.month-booking-card.fullset *,
-.day-view-booking-card.fullset * {
-    color: white !important;
-}
-
 /* Ensure text elements inherit the correct color */
-.booking-card.fullset *,
-.month-booking-card.fullset *,
-.day-view-booking-card.fullset *,
-.booking-card.kids-pedicure *,
-.month-booking-card.kids-pedicure *,
-.day-view-booking-card.kids-pedicure * {
-    color: white !important;
+.booking-card *,
+.month-booking-card *,
+.day-view-booking-card * {
+    color: inherit;
 }
 
 /* Override any other text color styles */
-.booking-card.fullset .booking-time,
-.booking-card.fullset .booking-customer,
-.booking-card.fullset .booking-service,
-.month-booking-card.fullset .month-booking-time,
-.month-booking-card.fullset .month-booking-customer,
-.month-booking-card.fullset .month-booking-service,
-.day-view-booking-card.fullset .day-view-booking-time,
-.day-view-booking-card.fullset .day-view-booking-customer,
-.day-view-booking-card.fullset .day-view-booking-service,
-.booking-card.kids-pedicure .booking-time,
-.booking-card.kids-pedicure .booking-customer,
-.booking-card.kids-pedicure .booking-service,
-.month-booking-card.kids-pedicure .month-booking-time,
-.month-booking-card.kids-pedicure .month-booking-customer,
-.month-booking-card.kids-pedicure .month-booking-service,
-.day-view-booking-card.kids-pedicure .day-view-booking-time,
-.day-view-booking-card.kids-pedicure .day-view-booking-customer,
-.day-view-booking-card.kids-pedicure .day-view-booking-service {
-    color: white !important;
-    opacity: 1 !important;
+.booking-card .booking-time,
+.booking-card .booking-customer,
+.booking-card .booking-service,
+.month-booking-card .month-booking-time,
+.month-booking-card .month-booking-customer,
+.month-booking-card .month-booking-service,
+.day-view-booking-card .day-view-booking-time,
+.day-view-booking-card .day-view-booking-customer,
+.day-view-booking-card .day-view-booking-service {
+    color: inherit;
+    opacity: 1;
 }
 
 .week-view-container {

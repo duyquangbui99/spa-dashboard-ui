@@ -14,7 +14,8 @@ const WeekView = ({
     formatShortDate,
     workers,
     onEditBooking,
-    onDeleteBooking
+    onDeleteBooking,
+    categories
 }) => {
     const [selectedTimeslot, setSelectedTimeslot] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
@@ -131,6 +132,9 @@ const WeekView = ({
                                         }
                                         const serviceClass = getServiceClass(mainService);
                                         const position = getBookingPosition(booking, slotBookings);
+                                        const category = categories.find(cat =>
+                                            cat.name.toLowerCase() === serviceClass.replace(/-/g, ' ')
+                                        );
 
                                         return (
                                             <div
@@ -142,7 +146,9 @@ const WeekView = ({
                                                     left: '1%',
                                                     top: position.top,
                                                     position: 'absolute',
-                                                    zIndex: bookingIndex + 1
+                                                    zIndex: bookingIndex + 1,
+                                                    backgroundColor: category ? `${category.color}66` : 'var(--color-background)',
+                                                    borderLeftColor: category ? category.color : 'var(--color-button-border)'
                                                 }}
                                                 title={`${booking.customerName} - ${serviceDisplay}`}
                                             >
