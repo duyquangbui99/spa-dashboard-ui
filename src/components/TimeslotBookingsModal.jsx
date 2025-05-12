@@ -26,7 +26,17 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime }) => {
                                             {booking.customerName}
                                         </div>
                                         <div className="booking-service">
-                                            {booking.serviceIds.map(s => s.name).join(', ')}
+                                            {booking.serviceIds
+                                                ? booking.serviceIds.map(s => s.name).join(', ')
+                                                : booking.services.map(s => {
+                                                    let name = '';
+                                                    if (typeof s.serviceId === 'object' && s.serviceId !== null) {
+                                                        name = s.serviceId.name || s.serviceId._id || '[unknown]';
+                                                    } else {
+                                                        name = s.serviceId;
+                                                    }
+                                                    return `${name} x ${s.quantity || 1}`;
+                                                }).join(', ')}
                                         </div>
                                         {booking.workerId && (
                                             <div className="booking-worker">
