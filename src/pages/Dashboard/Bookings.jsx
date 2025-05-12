@@ -19,6 +19,7 @@ const Bookings = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isStaffDropdownOpen, setIsStaffDropdownOpen] = useState(false);
     const [staffSearchTerm, setStaffSearchTerm] = useState('');
+    const [editingBooking, setEditingBooking] = useState(null);
     const { role, workerId } = useAuth();
     //Get start and end dates for the current view
     const getStartAndEndDates = useCallback(() => {
@@ -65,55 +66,52 @@ const Bookings = () => {
         };
     }, [isStaffDropdownOpen]);
 
-    useEffect(() => {
-        const fetchBookings = async () => {
-            try {
-                const { start, end } = getStartAndEndDates();
-                let res
+    const fetchBookings = useCallback(async () => {
+        try {
+            const { start, end } = getStartAndEndDates();
+            let res;
 
-                if (role === 'admin') {
+            if (role === 'admin') {
+                res = await axios.get(`/api/bookings/range?start=${start}&end=${end}`);
+            } else {
+                res = await axios.get(`/api/bookings/worker/${workerId}/range?start=${start}&end=${end}`);
+            }
 
-                    res = await axios.get(`/api/bookings/range?start=${start}&end=${end}`);
+            console.log(role, workerId);
+            // Ensure all bookings have valid Date objects
+            const normalizedBookings = res.data.map(booking => {
+                // Create a proper Date object from the startTime string
+                const startTimeDate = new Date(booking.startTime);
+
+                // Make sure we have a valid date before proceeding
+                if (isNaN(startTimeDate.getTime())) {
+                    console.error('Invalid date found:', booking.startTime);
                 }
 
-                else {
-                    res = await axios.get(`/api/bookings/worker/${workerId}/range?start=${start}&end=${end}`);
+                startTimeDate.toLocaleString();
+
+                return {
+                    ...booking,
+                    // Store the original UTC date string for reference
+                    originalStartTime: booking.startTime,
+                    // Store the parsed Date object
+                    startTime: startTimeDate
                 };
+            });
 
-                console.log(role, workerId)
-                // Ensure all bookings have valid Date objects
-                const normalizedBookings = res.data.map(booking => {
-                    // Create a proper Date object from the startTime string
-                    const startTimeDate = new Date(booking.startTime);
-
-                    // Make sure we have a valid date before proceeding
-                    if (isNaN(startTimeDate.getTime())) {
-                        console.error('Invalid date found:', booking.startTime);
-                    }
-
-                    startTimeDate.toLocaleString();
-
-
-                    return {
-                        ...booking,
-                        // Store the original UTC date string for reference
-                        originalStartTime: booking.startTime,
-                        // Store the parsed Date object
-                        startTime: startTimeDate
-                    };
-                });
-
-                setBookings(normalizedBookings);
-                console.log('Normalized bookings:', normalizedBookings);
-            } catch (err) {
-                console.error(err);
-                setError('Failed to load bookings');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchBookings();
+            setBookings(normalizedBookings);
+            console.log('Normalized bookings:', normalizedBookings);
+        } catch (err) {
+            console.error(err);
+            setError('Failed to load bookings');
+        } finally {
+            setLoading(false);
+        }
     }, [getStartAndEndDates, role, workerId]);
+
+    useEffect(() => {
+        fetchBookings();
+    }, [fetchBookings]);
 
     useEffect(() => {
         // Fetch workers for service name lookup
@@ -324,6 +322,22 @@ const Bookings = () => {
         );
     };
 
+    const handleEditBooking = (booking) => {
+        setEditingBooking(booking);
+        setIsModalOpen(true);
+    };
+
+    const handleDeleteBooking = async (bookingId) => {
+        try {
+            await axios.delete(`/api/bookings/${bookingId}`);
+            // Refresh bookings after deletion
+            fetchBookings();
+        } catch (err) {
+            console.error('Error deleting booking:', err);
+            setError('Failed to delete booking');
+        }
+    };
+
     if (loading) return (
         <div className="booking-loading">
             <div>Loading bookings...</div>
@@ -443,7 +457,15 @@ const Bookings = () => {
                 </button>
             </div>
 
-            <BookingModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+            <BookingModal
+                isOpen={isModalOpen}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setEditingBooking(null);
+                }}
+                editingBooking={editingBooking}
+                onSuccess={fetchBookings}
+            />
             {/* Week view */}
             {viewMode === 'week' && (
                 <WeekView
@@ -458,6 +480,8 @@ const Bookings = () => {
                     formatTime={formatTime}
                     formatShortDate={formatShortDate}
                     workers={workers}
+                    onEditBooking={handleEditBooking}
+                    onDeleteBooking={handleDeleteBooking}
                 />
             )}
             {/* Day view */}
@@ -472,6 +496,9 @@ const Bookings = () => {
                     getServiceClass={getServiceClass}
                     formatTime={formatTime}
                     formatDateHeader={formatDateHeader}
+                    onEditBooking={handleEditBooking}
+                    onDeleteBooking={handleDeleteBooking}
+                    workers={workers}
                 />
             )}
             {/* Month view */}
@@ -482,6 +509,9 @@ const Bookings = () => {
                     selectedStaff={selectedStaff}
                     formatTime={formatTime}
                     getServiceClass={getServiceClass}
+                    onEditBooking={handleEditBooking}
+                    onDeleteBooking={handleDeleteBooking}
+                    workers={workers}
                 />
             )}
 

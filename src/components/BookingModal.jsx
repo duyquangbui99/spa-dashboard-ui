@@ -2,11 +2,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import axios from '../utils/axiosInstance';
 import './BookingModal.css';
 
-const BookingModal = ({ isOpen, onClose }) => {
+const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
     const [workers, setWorkers] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedWorker, setSelectedWorker] = useState(null);
-    const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedServices, setSelectedServices] = useState([]);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
@@ -16,7 +15,6 @@ const BookingModal = ({ isOpen, onClose }) => {
     const [error, setError] = useState('');
     const [isValid, setIsValid] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
-    const [showAddMore, setShowAddMore] = useState(false);
     const [expandedCategory, setExpandedCategory] = useState(null);
     const [serviceQuantities, setServiceQuantities] = useState({});
 
@@ -195,15 +193,20 @@ const BookingModal = ({ isOpen, onClose }) => {
         setIsValid(isValidForm);
     }, [customer, selectedWorker, selectedServices, selectedDate, selectedTime]);
 
-    const handleCategorySelect = (categoryId) => {
-        setSelectedCategories(prev =>
-            prev.includes(categoryId)
-                ? prev.filter(id => id !== categoryId)
-                : [...prev, categoryId]
-        );
-    };
-
-
+    useEffect(() => {
+        if (editingBooking) {
+            // Populate form with editing booking data
+            setCustomer({
+                name: editingBooking.customerName,
+                phone: editingBooking.customerPhone,
+                email: editingBooking.customerEmail
+            });
+            setSelectedWorker(editingBooking.workerId._id);
+            setSelectedServices(editingBooking.services.map(s => s.serviceId._id));
+            setSelectedDate(new Date(editingBooking.startTime).toISOString().split('T')[0]);
+            setSelectedTime(formatTime(new Date(editingBooking.startTime)));
+        }
+    }, [editingBooking]);
 
     const handleNextStep = () => {
         if (currentStep < 6) {
@@ -217,133 +220,54 @@ const BookingModal = ({ isOpen, onClose }) => {
         }
     };
 
-
-
     const resetForm = () => {
         setSelectedWorker(null);
-        setSelectedCategories([]);
         setSelectedServices([]);
         setSelectedDate('');
         setSelectedTime('');
         setCustomer({ name: '', phone: '', email: '' });
         setCurrentStep(1);
-        setShowAddMore(false);
         setExpandedCategory(null);
         setError('');
         setServiceQuantities({});
     };
 
-    const handleClose = () => {
-        resetForm();
-        onClose();
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!isValid) return;
+        setError(null);
 
         try {
-            setIsLoading(true);
-            setError('');
-
-            // Parse the selected date and time
-            const [year, month, day] = selectedDate.split('-').map(Number);
-            const [hours, minutes] = selectedTime.split(':').map(Number);
-
-            // Create local date first
-            const localDateTime = new Date(year, month - 1, day, hours, minutes);
-
-            console.log('Local DateTime:', {
-                date: localDateTime.toLocaleString(),
-                components: {
-                    year,
-                    month,
-                    day,
-                    hours,
-                    minutes
-                }
-            });
-
-            // Convert to UTC
-            // For CDT (UTC-5), if local is 9:00 AM, we need to store 14:00 UTC
-            const utcHours = hours + Math.floor(localDateTime.getTimezoneOffset() / 60);
-            const utcMinutes = minutes + (localDateTime.getTimezoneOffset() % 60);
-
-            // Handle minute overflow
-            let finalUtcHours = utcHours;
-            let finalUtcMinutes = utcMinutes;
-            if (finalUtcMinutes >= 60) {
-                finalUtcHours += Math.floor(finalUtcMinutes / 60);
-                finalUtcMinutes = finalUtcMinutes % 60;
-            }
-
-            // Handle hour overflow
-            let finalYear = year;
-            let finalMonth = month - 1;
-            let finalDay = day;
-            if (finalUtcHours >= 24) {
-                // Move to next day
-                const nextDay = new Date(year, month - 1, day + 1);
-                finalYear = nextDay.getFullYear();
-                finalMonth = nextDay.getMonth();
-                finalDay = nextDay.getDate();
-                finalUtcHours = finalUtcHours % 24;
-            }
-
-            const utcDateTime = new Date(Date.UTC(
-                finalYear,
-                finalMonth,
-                finalDay,
-                finalUtcHours,
-                finalUtcMinutes
-            ));
-
-            console.log('Booking Times:', {
-                local: localDateTime.toLocaleString(),
-                localComponents: {
-                    year, month, day,
-                    hours, minutes
-                },
-                utc: utcDateTime.toISOString(),
-                utcComponents: {
-                    year: finalYear,
-                    month: finalMonth + 1,
-                    day: finalDay,
-                    hours: finalUtcHours,
-                    minutes: finalUtcMinutes
-                },
-                offset: localDateTime.getTimezoneOffset()
-            });
-
-            const servicesWithQuantities = selectedServices.map(id => ({
-                serviceId: id,
-                quantity: serviceQuantities[id] || 1
-            }));
-
-
-            const res = await axios.post('/api/bookings', {
+            const bookingData = {
                 customerName: customer.name,
                 customerPhone: customer.phone,
                 customerEmail: customer.email,
                 workerId: selectedWorker,
-                services: servicesWithQuantities,
-                startTime: utcDateTime.toISOString(),
-            });
+                services: selectedServices.map(serviceId => ({
+                    serviceId,
+                    quantity: serviceQuantities[serviceId] || 1
+                })),
+                startTime: new Date(`${selectedDate}T${selectedTime}`).toISOString()
+            };
 
-            if (res.status === 201) {
-                resetForm();
-                onClose();
-                // You might want to add a success notification here
+            if (editingBooking) {
+                // Update existing booking
+                await axios.put(`/api/bookings/${editingBooking._id}`, bookingData);
+            } else {
+                // Create new booking
+                await axios.post('/api/bookings', bookingData);
+            }
+
+            resetForm();
+            onClose();
+            // Instead of reloading the page, we'll let the parent component handle the refresh
+            if (typeof onSuccess === 'function') {
+                onSuccess();
             }
         } catch (err) {
-            setError('Booking failed. Please try again.');
-            console.error('Booking creation failed:', err.response?.data || err.message);
-        } finally {
-            setIsLoading(false);
+            console.error('Error saving booking:', err);
+            setError(err.response?.data?.message || 'Failed to save booking');
         }
     };
-
-
 
     const getTotalPrice = useCallback(() => {
         if (!selectedWorker || selectedServices.length === 0) return 0;
@@ -412,18 +336,11 @@ const BookingModal = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <button
-                    className="close-button"
-                    onClick={handleClose}
-                    aria-label="Close modal"
-                >
-                    ✕
-                </button>
-
+        <div className={`modal-overlay ${isOpen ? 'active' : ''}`}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h2>Book an Appointment</h2>
+                    <h2>{editingBooking ? 'Edit Booking' : 'New Booking'}</h2>
+                    <button className="close-button" onClick={onClose}>×</button>
                 </div>
 
                 <div className="booking-steps">
@@ -437,14 +354,14 @@ const BookingModal = ({ isOpen, onClose }) => {
                     {error && <div className="error-message">{error}</div>}
 
                     {currentStep === 1 && (
-                        <div className="form-group">
+                        <div className="booking-form-group">
                             <label>Select Stylist</label>
                             <select
                                 value={selectedWorker || ''}
                                 onChange={e => {
                                     setSelectedWorker(e.target.value);
                                     setSelectedServices([]);
-                                    setSelectedCategories([]);
+                                    setSelectedDate('');
                                     setSelectedTime('');
                                     setExpandedCategory(null);
                                     setServiceQuantities({});
@@ -460,7 +377,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                     )}
 
                     {currentStep === 2 && selectedWorker && (
-                        <div className="form-group">
+                        <div className="booking-form-group">
                             <label>Select Services</label>
                             {getStylistCategories().length > 0 ? (
                                 <div className="categories-container">
@@ -545,7 +462,7 @@ const BookingModal = ({ isOpen, onClose }) => {
 
                     {currentStep === 3 && selectedWorker && selectedServices.length > 0 && (
                         <>
-                            <div className="form-group">
+                            <div className="booking-form-group">
                                 <label>Select Date</label>
                                 <input
                                     type="date"
@@ -559,7 +476,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                             </div>
 
                             {selectedDate && (
-                                <div className="form-group">
+                                <div className="booking-form-group">
                                     <label>Select Time</label>
                                     <div className="time-slots-grid">
                                         {availableTimeSlots.map(slot => (
@@ -584,7 +501,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                     )}
 
                     {currentStep === 4 && (
-                        <div className="form-group">
+                        <div className="booking-form-group">
                             <label>Your Information</label>
                             <input
                                 placeholder="Name"

@@ -12,7 +12,9 @@ const WeekView = ({
     getServiceClass,
     formatTime,
     formatShortDate,
-    workers
+    workers,
+    onEditBooking,
+    onDeleteBooking
 }) => {
     const [selectedTimeslot, setSelectedTimeslot] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
@@ -167,6 +169,8 @@ const WeekView = ({
                 }}
                 bookings={selectedTimeslot ? getBookingsForSlot(selectedDay, selectedTimeslot) : []}
                 formatTime={formatTime}
+                onEditBooking={onEditBooking}
+                onDeleteBooking={onDeleteBooking}
             />
         </div>
     );
