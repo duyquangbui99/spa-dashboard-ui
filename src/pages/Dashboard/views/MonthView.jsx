@@ -7,6 +7,8 @@ const MonthView = ({
     selectedStaff,
     formatTime,
     getServiceClass,
+    onEditBooking,
+    onDeleteBooking,
     workers
 }) => {
     const [selectedDay, setSelectedDay] = useState(null);
@@ -186,6 +188,8 @@ const MonthView = ({
                 onClose={() => setSelectedDay(null)}
                 bookings={selectedDay ? getBookingsForDay(selectedDay) : []}
                 formatTime={formatTime}
+                onEditBooking={onEditBooking}
+                onDeleteBooking={onDeleteBooking}
             />
         </div>
     );

@@ -1,8 +1,20 @@
 import React from 'react';
 import './TimeslotBookingsModal.css';
 
-const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime }) => {
+const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBooking, onDeleteBooking }) => {
     if (!isOpen) return null;
+
+    const handleEdit = (booking) => {
+        onEditBooking(booking);
+        onClose();
+    };
+
+    const handleDelete = async (bookingId) => {
+        if (window.confirm('Are you sure you want to delete this booking?')) {
+            await onDeleteBooking(bookingId);
+            onClose();
+        }
+    };
 
     return (
         <div className="modal-overlay" onClick={onClose}>
@@ -43,6 +55,20 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime }) => {
                                                 Staff: {booking.workerId.name}
                                             </div>
                                         )}
+                                        <div className="booking-actions">
+                                            <button
+                                                className="edit-button"
+                                                onClick={() => handleEdit(booking)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                className="delete-button"
+                                                onClick={() => handleDelete(booking._id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}

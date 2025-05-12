@@ -96,6 +96,40 @@
     font-style: italic;
 }
 
+.booking-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.edit-button,
+.delete-button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+
+.edit-button {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.edit-button:hover {
+    background-color: #357abd;
+}
+
+.delete-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}
+
 @media (max-width: 768px) {
     .modal-content {
         width: 95%;

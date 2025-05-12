@@ -11,6 +11,8 @@ const DayView = ({
     getServiceClass,
     formatTime,
     formatDateHeader,
+    onEditBooking,
+    onDeleteBooking,
     workers
 }) => {
     // Get unique staff members from bookings
@@ -186,6 +188,8 @@ const DayView = ({
                 }}
                 bookings={selectedTimeslot && selectedStaffColumn ? getStaffBookings(selectedTimeslot, selectedStaffColumn) : []}
                 formatTime={formatTime}
+                onEditBooking={onEditBooking}
+                onDeleteBooking={onDeleteBooking}
             />
         </div>
     );
