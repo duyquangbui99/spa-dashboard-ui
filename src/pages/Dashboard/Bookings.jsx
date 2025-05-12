@@ -11,6 +11,7 @@ import BookingModal from '../../components/BookingModal';
 const Bookings = () => {
     const [bookings, setBookings] = useState([]);
     const [workers, setWorkers] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -114,16 +115,20 @@ const Bookings = () => {
     }, [fetchBookings]);
 
     useEffect(() => {
-        // Fetch workers for service name lookup
-        const fetchWorkers = async () => {
+        // Fetch workers and categories for service name lookup
+        const fetchData = async () => {
             try {
-                const res = await axios.get('/api/workers');
-                setWorkers(res.data);
+                const [workersRes, categoriesRes] = await Promise.all([
+                    axios.get('/api/workers'),
+                    axios.get('/api/service-categories')
+                ]);
+                setWorkers(workersRes.data);
+                setCategories(categoriesRes.data);
             } catch (err) {
-                console.error('Failed to fetch workers', err);
+                console.error('Failed to fetch data', err);
             }
         };
-        fetchWorkers();
+        fetchData();
     }, []);
 
     // Get start of the week (Monday)
@@ -165,16 +170,47 @@ const Bookings = () => {
 
     // Get service class for styling
     const getServiceClass = (serviceName) => {
-        // Ensure serviceName is a string
         if (!serviceName || typeof serviceName !== 'string') {
+            console.warn('Invalid serviceName:', serviceName);
             return '';
         }
+        // First try to find an exact match
+        for (const worker of workers) {
+            const matchedService = worker.services.find(
+                s => s.name.toLowerCase() === serviceName.toLowerCase()
+            );
 
-        return serviceName
-            .toLowerCase()
-            .replace(/['"]/g, '') // remove apostrophes and quotes
-            .replace(/[\s-]+/g, '-'); // replace space/hyphen with single hyphen
+            if (matchedService) {
+                const category = categories.find(cat => cat._id === matchedService.categoryId);
+                if (category) {
+                    return category.name.toLowerCase().replace(/\s+/g, '-');
+                }
+            }
+        }
+
+        // If no exact match, try partial matching
+        for (const worker of workers) {
+            const matchedService = worker.services.find(s => {
+                const serviceWords = s.name.toLowerCase().split(/\s+/);
+                const searchWords = serviceName.toLowerCase().split(/\s+/);
+                // Check if all words in the search term are present in the service name
+                return searchWords.every(word =>
+                    serviceWords.some(serviceWord => serviceWord.includes(word) || word.includes(serviceWord))
+                );
+            });
+
+            if (matchedService) {
+                const category = categories.find(cat => cat._id === matchedService.categoryId);
+                if (category) {
+                    return category.name.toLowerCase().replace(/\s+/g, '-');
+                }
+            }
+        }
+
+        const fallback = serviceName.toLowerCase().replace(/\s+/g, '-').replace(/['"]/g, '');
+        return fallback;
     };
+
 
     // Generate time slots for the calendar
     const generateTimeSlots = () => {
@@ -482,6 +518,7 @@ const Bookings = () => {
                     workers={workers}
                     onEditBooking={handleEditBooking}
                     onDeleteBooking={handleDeleteBooking}
+                    categories={categories}
                 />
             )}
             {/* Day view */}
@@ -499,6 +536,7 @@ const Bookings = () => {
                     onEditBooking={handleEditBooking}
                     onDeleteBooking={handleDeleteBooking}
                     workers={workers}
+                    categories={categories}
                 />
             )}
             {/* Month view */}
@@ -512,38 +550,20 @@ const Bookings = () => {
                     onEditBooking={handleEditBooking}
                     onDeleteBooking={handleDeleteBooking}
                     workers={workers}
+                    categories={categories}
                 />
             )}
 
             <div className="service-labels">
-                <div className="service-label">
-                    <div className="service-color pedicure"></div>
-                    <span>Pedicure</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color manicure"></div>
-                    <span>Manicure</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color fullset"></div>
-                    <span>Fullset</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color fill"></div>
-                    <span>Fill</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color dipping-powder"></div>
-                    <span>Dipping Powder</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color gel-x"></div>
-                    <span>Gel X</span>
-                </div>
-                <div className="service-label">
-                    <div className="service-color kids-pedicure"></div>
-                    <span>Kid's Pedicure</span>
-                </div>
+                {categories.map(category => (
+                    <div key={category._id} className="service-label">
+                        <div
+                            className="service-color"
+                            style={{ backgroundColor: category.color }}
+                        ></div>
+                        <span>{category.name}</span>
+                    </div>
+                ))}
             </div>
         </div>
     );

@@ -9,7 +9,8 @@ const MonthView = ({
     getServiceClass,
     onEditBooking,
     onDeleteBooking,
-    workers
+    workers,
+    categories
 }) => {
     const [selectedDay, setSelectedDay] = useState(null);
 
@@ -105,11 +106,7 @@ const MonthView = ({
 
                 {days.map((day, index) => {
                     const dayBookings = getBookingsForDay(day);
-                    const cellClasses = [
-                        'month-day-cell',
-                        isCurrentMonth(day) ? 'current-month' : 'other-month',
-                        isToday(day) ? 'today' : ''
-                    ].filter(Boolean).join(' ');
+                    const cellClasses = `month-day-cell ${isToday(day) ? 'today' : ''} ${isCurrentMonth(day) ? 'current-month' : 'other-month'}`;
 
                     return (
                         <div key={index} className={cellClasses} onClick={() => setSelectedDay(day)} style={{ cursor: 'pointer' }}>
@@ -135,36 +132,27 @@ const MonthView = ({
                                             }
                                             return `${name} x ${s.quantity || 1}`;
                                         }).join(', ');
-                                        let firstName = '';
-                                        if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
-                                            firstName = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
-                                        } else {
-                                            const svc = worker.services.find(ws => ws._id === booking.services[0].serviceId);
-                                            if (svc) firstName = svc.name;
-                                        }
-                                        if (firstName) mainService = firstName;
-                                    } else {
-                                        serviceDisplay = booking.services.map(s => {
-                                            let name = '';
-                                            if (typeof s.serviceId === 'object' && s.serviceId !== null) {
-                                                name = s.serviceId.name || s.serviceId._id || '[unknown]';
-                                            } else {
-                                                name = s.serviceId;
-                                            }
-                                            return `${name} x ${s.quantity || 1}`;
-                                        }).join(', ');
                                         if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
                                             mainService = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
                                         } else {
-                                            mainService = booking.services[0].serviceId;
+                                            const svc = worker.services.find(ws => ws._id === booking.services[0].serviceId);
+                                            if (svc) mainService = svc.name;
                                         }
                                     }
                                 }
                                 const serviceClass = getServiceClass(mainService);
+                                const category = categories.find(cat =>
+                                    cat.name.toLowerCase() === serviceClass.replace(/-/g, ' ')
+                                );
+
                                 return (
                                     <div
                                         key={booking._id}
                                         className={`month-booking-card ${serviceClass}`}
+                                        style={{
+                                            backgroundColor: category ? `${category.color}66` : 'var(--color-background)',
+                                            borderLeftColor: category ? category.color : 'var(--color-button-border)'
+                                        }}
                                         title={`${booking.customerName} - ${serviceDisplay}`}
                                     >
                                         <div className="month-booking-time">

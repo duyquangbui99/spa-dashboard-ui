@@ -17,6 +17,7 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
     const [currentStep, setCurrentStep] = useState(1);
     const [expandedCategory, setExpandedCategory] = useState(null);
     const [serviceQuantities, setServiceQuantities] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,6 +45,11 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
     useEffect(() => {
         if (selectedWorker && selectedDate && selectedServices.length > 0) {
             const worker = workers.find(w => w._id === selectedWorker);
+            if (!worker || !worker.services) {
+                setAvailableTimeSlots([]);
+                return;
+            }
+
             console.log('Selected Worker:', worker);
             console.log('Selected Date:', selectedDate);
 
@@ -54,6 +60,11 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
 
             // If the selected worker is "Anyone", show all available slots without checking bookings
             if (worker.name === "Anyone") {
+                if (!worker.workingHours?.start || !worker.workingHours?.end) {
+                    setAvailableTimeSlots([]);
+                    return;
+                }
+
                 const start = parseTime(worker.workingHours.start);
                 const end = parseTime(worker.workingHours.end);
 
@@ -139,6 +150,11 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
                     console.log('Taken time slots:', takenTimeSlots);
 
                     // Calculate available slots
+                    if (!worker.workingHours?.start || !worker.workingHours?.end) {
+                        setAvailableTimeSlots([]);
+                        return;
+                    }
+
                     const start = parseTime(worker.workingHours.start);
                     const end = parseTime(worker.workingHours.end);
 
@@ -195,16 +211,46 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
 
     useEffect(() => {
         if (editingBooking) {
-            // Populate form with editing booking data
-            setCustomer({
-                name: editingBooking.customerName,
-                phone: editingBooking.customerPhone,
-                email: editingBooking.customerEmail
-            });
-            setSelectedWorker(editingBooking.workerId._id);
-            setSelectedServices(editingBooking.services.map(s => s.serviceId._id));
-            setSelectedDate(new Date(editingBooking.startTime).toISOString().split('T')[0]);
-            setSelectedTime(formatTime(new Date(editingBooking.startTime)));
+            try {
+                // Populate form with editing booking data
+                setCustomer({
+                    name: editingBooking.customerName || '',
+                    phone: editingBooking.customerPhone || '',
+                    email: editingBooking.customerEmail || ''
+                });
+
+                // Safely handle worker ID
+                if (editingBooking.workerId && editingBooking.workerId._id) {
+                    setSelectedWorker(editingBooking.workerId._id);
+                } else if (typeof editingBooking.workerId === 'string') {
+                    setSelectedWorker(editingBooking.workerId);
+                }
+
+                // Safely handle services
+                if (Array.isArray(editingBooking.services)) {
+                    const serviceIds = editingBooking.services.map(s => {
+                        if (s.serviceId && s.serviceId._id) {
+                            return s.serviceId._id;
+                        } else if (typeof s.serviceId === 'string') {
+                            return s.serviceId;
+                        }
+                        return null;
+                    }).filter(Boolean);
+                    setSelectedServices(serviceIds);
+                }
+
+                // Safely handle date and time
+                if (editingBooking.startTime) {
+                    const startDate = new Date(editingBooking.startTime);
+                    if (!isNaN(startDate.getTime())) {
+                        setSelectedDate(startDate.toISOString().split('T')[0]);
+                        setSelectedTime(formatTime(startDate));
+                    }
+                }
+            } catch (error) {
+                console.error('Error populating booking form:', error);
+                setError('Failed to load booking data. Please try again.');
+            }
         }
     }, [editingBooking]);
 
@@ -234,7 +280,9 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return; // Prevent multiple submissions
         setError(null);
+        setIsSubmitting(true);
 
         try {
             const bookingData = {
@@ -266,16 +314,21 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
         } catch (err) {
             console.error('Error saving booking:', err);
             setError(err.response?.data?.message || 'Failed to save booking');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
     const getTotalPrice = useCallback(() => {
         if (!selectedWorker || selectedServices.length === 0) return 0;
         const worker = workers.find(w => w._id === selectedWorker);
+        if (!worker || !worker.services) return 0;
+
         return selectedServices.reduce((acc, id) => {
             const svc = worker.services.find(s => s._id === id);
+            if (!svc) return acc;
             const quantity = serviceQuantities[id] || 1;
-            return acc + (svc?.price || 0) * quantity;
+            return acc + (svc.price || 0) * quantity;
         }, 0);
     }, [selectedWorker, selectedServices, workers, serviceQuantities]);
 
@@ -569,9 +622,9 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
                             <button
                                 type="submit"
                                 className="submit-button"
-                                disabled={isLoading || !isValid}
+                                disabled={isLoading || !isValid || isSubmitting}
                             >
-                                {isLoading ? 'Booking...' : 'Confirm Booking'}
+                                {isSubmitting ? 'Booking...' : 'Confirm Booking'}
                             </button>
                         )}
                     </div>

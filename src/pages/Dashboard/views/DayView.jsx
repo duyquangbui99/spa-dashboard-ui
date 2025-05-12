@@ -13,7 +13,8 @@ const DayView = ({
     formatDateHeader,
     onEditBooking,
     onDeleteBooking,
-    workers
+    workers,
+    categories
 }) => {
     // Get unique staff members from bookings
     const getUniqueStaff = () => {
@@ -146,6 +147,9 @@ const DayView = ({
                                             }
                                             const serviceClass = getServiceClass(mainService);
                                             const position = getBookingPosition(booking, staffBookings);
+                                            const category = categories.find(cat =>
+                                                cat.name.toLowerCase() === serviceClass.replace(/-/g, ' ')
+                                            );
 
                                             return (
                                                 <div
@@ -157,7 +161,9 @@ const DayView = ({
                                                         left: '1%',
                                                         top: position.top,
                                                         position: 'absolute',
-                                                        zIndex: bookingIndex + 1
+                                                        zIndex: bookingIndex + 1,
+                                                        backgroundColor: category ? `${category.color}66` : 'var(--color-background)',
+                                                        borderLeftColor: category ? category.color : 'var(--color-button-border)'
                                                     }}
                                                     title={`${booking.customerName} - ${serviceDisplay}`}
                                                 >
