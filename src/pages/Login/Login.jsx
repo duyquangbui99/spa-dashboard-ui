@@ -35,8 +35,8 @@ const Login = () => {
 
             <div className="login-card">
                 <div className="login-header">
-                    <h1>Tranquility</h1>
-                    <p>Nails & Spa</p>
+                    <h1>Management Project</h1>
+                    <p>Quang Bui</p>
                 </div>
                 <div className="login-form-container">
                     <form onSubmit={handleSubmit} className="login-form">
