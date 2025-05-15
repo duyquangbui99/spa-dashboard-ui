@@ -21,7 +21,7 @@
     position: relative;
 }
 
-.modal-header {
+.timeslot-modal-header {
     padding: 1rem;
     border-bottom: 1px solid var(--color-button-border);
     display: flex;
@@ -33,7 +33,7 @@
     z-index: 1;
 }
 
-.modal-header h2 {
+.timeslot-modal-header h2 {
     margin: 0;
     font-size: 1.25rem;
     color: var(--color-primary-text);
