@@ -18,6 +18,7 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
     const [expandedCategory, setExpandedCategory] = useState(null);
     const [serviceQuantities, setServiceQuantities] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [stylistSearch, setStylistSearch] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -386,6 +387,11 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
         }
     };
 
+    // Filtered stylists for search
+    const filteredWorkers = workers.filter(w =>
+        w.name.toLowerCase().includes(stylistSearch.toLowerCase())
+    );
+
     if (!isOpen) return null;
 
     return (
@@ -411,8 +417,18 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
                     {currentStep === 1 && (
                         <div className="booking-form-group">
                             <label>Select Stylist</label>
+                            <input
+                                className="stylist-search-bar"
+                                type="text"
+                                placeholder="Search stylist by name..."
+                                value={stylistSearch}
+                                onChange={e => setStylistSearch(e.target.value)}
+                                autoComplete="off"
+                                spellCheck={false}
+                                style={{ marginBottom: 18 }}
+                            />
                             <div className="stylist-cards">
-                                {workers.map(w => (
+                                {filteredWorkers.map(w => (
                                     <div
                                         key={w._id}
                                         className={`stylist-card${selectedWorker === w._id ? ' selected' : ''}`}
