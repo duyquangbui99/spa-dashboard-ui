@@ -18,6 +18,7 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
     const [expandedCategory, setExpandedCategory] = useState(null);
     const [serviceQuantities, setServiceQuantities] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [stylistSearch, setStylistSearch] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -386,6 +387,11 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
         }
     };
 
+    // Filtered stylists for search
+    const filteredWorkers = workers.filter(w =>
+        w.name.toLowerCase().includes(stylistSearch.toLowerCase())
+    );
+
     if (!isOpen) return null;
 
     return (
@@ -397,10 +403,12 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
                 </div>
 
                 <div className="booking-steps">
-                    <div className={`step ${currentStep >= 1 ? 'active' : ''}`}>1. Stylist</div>
-                    <div className={`step ${currentStep >= 2 ? 'active' : ''}`}>2. Services</div>
-                    <div className={`step ${currentStep >= 3 ? 'active' : ''}`}>3. Date & Time</div>
-                    <div className={`step ${currentStep >= 4 ? 'active' : ''}`}>4. Info</div>
+                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
+                        <div className={`step ${currentStep >= 1 ? 'active' : ''}`}>1. Stylist</div>
+                        <div className={`step ${currentStep >= 2 ? 'active' : ''}`}>2. Services</div>
+                        <div className={`step ${currentStep >= 3 ? 'active' : ''}`}>3. Date & Time</div>
+                        <div className={`step ${currentStep >= 4 ? 'active' : ''}`}>4. Info</div>
+                    </div>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -409,23 +417,49 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
                     {currentStep === 1 && (
                         <div className="booking-form-group">
                             <label>Select Stylist</label>
-                            <select
-                                value={selectedWorker || ''}
-                                onChange={e => {
-                                    setSelectedWorker(e.target.value);
-                                    setSelectedServices([]);
-                                    setSelectedDate('');
-                                    setSelectedTime('');
-                                    setExpandedCategory(null);
-                                    setServiceQuantities({});
-                                }}
-                                disabled={isLoading}
-                            >
-                                <option value="">Choose a stylist</option>
-                                {workers.map(w => (
-                                    <option key={w._id} value={w._id}>{w.name}</option>
+                            <input
+                                className="stylist-search-bar"
+                                type="text"
+                                placeholder="Search stylist by name..."
+                                value={stylistSearch}
+                                onChange={e => setStylistSearch(e.target.value)}
+                                autoComplete="off"
+                                spellCheck={false}
+                                style={{ marginBottom: 18 }}
+                            />
+                            <div className="stylist-cards">
+                                {filteredWorkers.map(w => (
+                                    <div
+                                        key={w._id}
+                                        className={`stylist-card${selectedWorker === w._id ? ' selected' : ''}`}
+                                        onClick={() => {
+                                            setSelectedWorker(w._id);
+                                            setSelectedServices([]);
+                                            setSelectedDate('');
+                                            setSelectedTime('');
+                                            setExpandedCategory(null);
+                                            setServiceQuantities({});
+                                        }}
+                                    >
+                                        {w.profileImage ? (
+                                            <img src={w.profileImage} alt={w.name} className="profile-img" />
+                                        ) : (
+                                            <div className="profile-img" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: '#b0b0c3', background: '#f0f0f7' }}>
+                                                <span role="img" aria-label="user">👤</span>
+                                            </div>
+                                        )}
+                                        <div className="stylist-name">{w.name}</div>
+                                        {w.experience ? (
+                                            <div className="stylist-exp">{w.experience} yrs exp</div>
+                                        ) : w.name === 'Anyone' && w.range ? (
+                                            <div className="stylist-range">{w.range} yrs exp</div>
+                                        ) : null}
+                                        {selectedWorker === w._id && (
+                                            <div className="checkmark">✓</div>
+                                        )}
+                                    </div>
                                 ))}
-                            </select>
+                            </div>
                         </div>
                     )}
 
