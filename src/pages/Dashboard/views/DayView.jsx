@@ -154,26 +154,24 @@ const DayView = ({
                                             return (
                                                 <div
                                                     key={booking._id}
-                                                    className={`day-view-booking-card ${serviceClass}`}
+                                                    className={`booking-card ${serviceClass}${position.row > 0 ? ' stacked' : ''}`}
                                                     style={{
                                                         height: position.height,
-                                                        width: 'calc(98% - 16px)',
+                                                        width: '98%',
                                                         left: '1%',
                                                         top: position.top,
                                                         position: 'absolute',
-                                                        zIndex: bookingIndex + 1,
-                                                        backgroundColor: category ? `${category.color}66` : 'var(--color-background)',
+                                                        zIndex: position.zIndex || (bookingIndex + 1),
+                                                        backgroundColor: category ? category.color : 'var(--color-background)',
                                                         borderLeftColor: category ? category.color : 'var(--color-button-border)'
                                                     }}
                                                     title={`${booking.customerName} - ${serviceDisplay}`}
                                                 >
-                                                    <div className="day-view-booking-time">
-                                                        {formatTime(booking.startTime)}
+                                                    <div className="booking-header">
+                                                        <span className="booking-time">{formatTime(booking.startTime)}</span>
+                                                        <span className="booking-staff">{booking.workerId?.name || 'Unassigned'}</span>
                                                     </div>
-                                                    <div className="day-view-booking-customer">
-                                                        {booking.customerName}
-                                                    </div>
-                                                    <div className="day-view-booking-service">
+                                                    <div className="booking-service">
                                                         {serviceDisplay}
                                                     </div>
                                                 </div>
