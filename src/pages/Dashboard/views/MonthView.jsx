@@ -113,60 +113,35 @@ const MonthView = ({
                             <div className="month-day-number">
                                 {day.getDate()}
                             </div>
-                            {dayBookings.map(booking => {
+                            {dayBookings.length > 0 && (() => {
+                                // Use the first booking's category for color
                                 let mainService = '';
-                                let serviceDisplay = '';
-                                if (booking.serviceIds?.[0]?.name) {
-                                    mainService = booking.serviceIds[0].name;
-                                    serviceDisplay = booking.serviceIds.map(s => s.name).join(', ');
-                                } else if (booking.services?.[0]?.serviceId) {
-                                    const worker = workers && (workers.find(w => w._id === (booking.workerId?._id || booking.workerId)));
-                                    if (worker) {
-                                        serviceDisplay = booking.services.map(s => {
-                                            let name = '';
-                                            if (typeof s.serviceId === 'object' && s.serviceId !== null) {
-                                                name = s.serviceId.name || s.serviceId._id || '[unknown]';
-                                            } else {
-                                                const svc = worker.services.find(ws => ws._id === s.serviceId);
-                                                name = svc ? svc.name : s.serviceId;
-                                            }
-                                            return `${name} x ${s.quantity || 1}`;
-                                        }).join(', ');
-                                        if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
-                                            mainService = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
-                                        } else {
-                                            const svc = worker.services.find(ws => ws._id === booking.services[0].serviceId);
-                                            if (svc) mainService = svc.name;
-                                        }
+                                if (dayBookings[0].serviceIds?.[0]?.name) {
+                                    mainService = dayBookings[0].serviceIds[0].name;
+                                } else if (dayBookings[0].services?.[0]?.serviceId) {
+                                    if (typeof dayBookings[0].services[0].serviceId === 'object' && dayBookings[0].services[0].serviceId !== null) {
+                                        mainService = dayBookings[0].services[0].serviceId.name || dayBookings[0].services[0].serviceId._id || '';
+                                    } else {
+                                        mainService = dayBookings[0].services[0].serviceId;
                                     }
                                 }
                                 const serviceClass = getServiceClass(mainService);
                                 const category = categories.find(cat =>
                                     cat.name.toLowerCase() === serviceClass.replace(/-/g, ' ')
                                 );
-
                                 return (
                                     <div
-                                        key={booking._id}
-                                        className={`month-booking-card ${serviceClass}`}
+                                        className={`month-booking-card summary ${serviceClass}`}
                                         style={{
-                                            backgroundColor: category ? `${category.color}66` : 'var(--color-background)',
+                                            backgroundColor: category ? category.color : 'var(--color-background)',
                                             borderLeftColor: category ? category.color : 'var(--color-button-border)'
                                         }}
-                                        title={`${booking.customerName} - ${serviceDisplay}`}
+                                        title={dayBookings.map(b => `${formatTime(b.startTime)} - ${b.customerName || ''}`).join('\n')}
                                     >
-                                        <div className="month-booking-time">
-                                            {formatTime(booking.startTime)}
-                                        </div>
-                                        <div className="month-booking-customer">
-                                            {booking.customerName}
-                                        </div>
-                                        <div className="month-booking-service">
-                                            {serviceDisplay}
-                                        </div>
+                                        <div className="booking-summary-count">{dayBookings.length} booking{dayBookings.length > 1 ? 's' : ''}</div>
                                     </div>
                                 );
-                            })}
+                            })()}
                         </div>
                     );
                 })}

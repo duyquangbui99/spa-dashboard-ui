@@ -356,7 +356,7 @@
 .month-booking-card,
 .day-view-booking-card {
     position: absolute;
-    padding: 4px 6px;
+    padding: 6px 8px;
     font-size: 11px;
     border-radius: 4px;
     margin: 1px;
@@ -364,61 +364,127 @@
     transition: all 0.2s ease;
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    min-height: 20px;
+    min-height: 36px;
     width: calc(100% - 2px);
     left: 1px;
-    z-index: 5;
     background-color: var(--color-background);
     border-left: 4px solid;
     color: var(--color-primary-text);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transform-origin: top left;
+}
+
+.booking-card.stacked .booking-header,
+.booking-card.stacked .booking-service {
+    opacity: 0.5;
+}
+
+.booking-card {
+    z-index: var(--booking-z, 5);
 }
 
 .booking-card:hover {
-    transform: scale(1.01);
+    transform: scale(1.02);
     z-index: 15 !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.booking-time,
+/* Add a subtle border to create folder-like appearance */
+.booking-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.booking-time {
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.booking-staff {
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.booking-service {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.9;
+    line-height: 1.2;
+}
+
+/* Remove unused styles */
+.booking-customer {
+    display: none;
+}
+
+/* Update month and day view booking cards to match */
+.month-booking-card,
+.day-view-booking-card {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.month-booking-header,
+.day-view-booking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .month-booking-time,
 .day-view-booking-time {
     font-weight: 600;
-    margin-bottom: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 10px;
-    opacity: 0.9;
-    line-height: 1.2;
-    color: inherit;
+    margin-right: 4px;
 }
 
-.booking-customer,
-.month-booking-customer,
-.day-view-booking-customer {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.month-booking-staff,
+.day-view-booking-staff {
     font-weight: 500;
-    margin-bottom: 1px;
-    line-height: 1.2;
-    font-size: 10px;
-    color: inherit;
+    opacity: 0.9;
 }
 
-.booking-service,
 .month-booking-service,
 .day-view-booking-service {
-    font-size: 9px;
+    font-size: 11px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    opacity: 0.8;
+    opacity: 0.9;
     line-height: 1.2;
-    color: inherit;
 }
 
-
+.month-booking-customer,
+.day-view-booking-customer {
+    display: none;
+}
 
 .booking-loading,
 .booking-error {
@@ -575,7 +641,6 @@
     box-shadow: var(--shadow-md);
 }
 
-
 .month-booking-time {
     font-weight: 600;
     font-size: 10px;
@@ -625,7 +690,6 @@
     .calendar-grid-scroll {
         grid-template-columns: 60px repeat(7, 1fr);
     }
-
 
     .time-slot {
         height: 80px;
@@ -891,7 +955,7 @@
 }
 
 .day-view-time-slot {
-    height: 100px;
+    height: 70px;
     border-bottom: 1px solid var(--color-button-border);
     padding: 8px;
     position: relative;
@@ -913,7 +977,7 @@
 }
 
 .day-view-slot {
-    height: 100px;
+    height: 70px;
     border-bottom: 1px solid var(--color-button-border);
     position: relative;
     background-color: var(--color-background);
@@ -1233,7 +1297,7 @@
 
 .week-view-grid .time-slot {
     position: relative;
-    height: 100px;
+    height: 70px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -1256,7 +1320,7 @@
 
 .week-view-grid .day-time-slot {
     position: relative;
-    height: 100px;
+    height: 70px;
     border-bottom: 1px solid var(--color-button-border);
     background: rgba(255, 255, 255, 0.8);
     cursor: pointer;
@@ -1316,5 +1380,58 @@
 
     .week-view-grid .day-column {
         min-width: 80px;
+    }
+}
+
+.month-booking-card.summary {
+    min-height: 48px;
+    height: 100%;
+    width: 100%;
+    font-size: 1rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    margin: 0;
+    padding: 8px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.month-booking-card.summary:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+    transform: scale(1.03);
+}
+
+.booking-summary-count {
+    font-weight: 600;
+    color: var(--color-primary-text);
+    letter-spacing: 0.01em;
+    font-size: 1rem;
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+    .month-booking-card.summary {
+        font-size: 0.75rem;
+        padding: 6px 2px;
+        min-height: 38px;
+    }
+
+    .booking-summary-count {
+        font-size: 0.75em;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .month-booking-card.summary {
+        font-size: 0.65rem;
+        padding: 4px 1px;
+        min-height: 28px;
+        border-radius: 4px;
+    }
+
+    .booking-summary-count {
+        font-size: 0.65em;
     }
 }

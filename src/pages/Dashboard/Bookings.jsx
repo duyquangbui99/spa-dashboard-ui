@@ -216,7 +216,10 @@ const Bookings = () => {
     const generateTimeSlots = () => {
         const slots = [];
         for (let hour = 9; hour <= 20; hour++) {
+            // Add the hour slot (e.g., 9:00)
             slots.push(new Date(currentDate).setHours(hour, 0, 0, 0));
+            // Add the half-hour slot (e.g., 9:30)
+            slots.push(new Date(currentDate).setHours(hour, 30, 0, 0));
         }
         return slots;
     };
@@ -233,16 +236,16 @@ const Bookings = () => {
         return days;
     };
 
-    // Modified getBookingsForSlot function to correctly handle local time
+    // Modified getBookingsForSlot function to only show bookings in their starting slot
     const getBookingsForSlot = (day, timeSlot) => {
-        // Create a date object for the day and hour in local time
+        // Create a date object for the day and time in local time
         const slotDate = new Date(day);
-        const slotHour = new Date(timeSlot).getHours();
-        slotDate.setHours(slotHour, 0, 0, 0);
+        const slotTime = new Date(timeSlot);
+        slotDate.setHours(slotTime.getHours(), slotTime.getMinutes(), 0, 0);
 
-        // Create an end date for the slot
+        // Create an end date for the slot (30 minutes later)
         const slotEndDate = new Date(slotDate);
-        slotEndDate.setHours(slotHour + 1, 0, 0, 0);
+        slotEndDate.setMinutes(slotDate.getMinutes() + 30);
 
         return bookings.filter(booking => {
             // Make sure we have a valid date object
@@ -252,63 +255,40 @@ const Bookings = () => {
             }
 
             try {
-                // Compare using local date components
+                // Only show bookings that start in this exact slot
                 return (
-                    booking.startTime.getDate() === slotDate.getDate() &&
-                    booking.startTime.getMonth() === slotDate.getMonth() &&
-                    booking.startTime.getFullYear() === slotDate.getFullYear() &&
-                    booking.startTime.getHours() === slotHour
+                    booking.startTime.getTime() >= slotDate.getTime() &&
+                    booking.startTime.getTime() < slotEndDate.getTime()
                 );
             } catch (err) {
                 console.error('Error comparing dates:', err, booking);
                 return false;
             }
         }).sort((a, b) => {
-            // Sort by minutes within the hour
-            return a.startTime.getMinutes() - b.startTime.getMinutes();
+            // Sort by start time
+            return a.startTime.getTime() - b.startTime.getTime();
         });
     };
 
-    // Calculate booking card height based on duration
-    const getBookingHeight = (duration) => {
-        // Each time slot is 100px height
-        const slotHeight = 100;
-        // Calculate height based on duration in hours
-        return (duration / 60) * slotHeight;
-    };
 
     // Calculate booking position and size
     const getBookingPosition = (booking, allBookings) => {
-        // Find overlapping bookings
-        const overlappingBookings = allBookings.filter(b => {
-            const bookingStart = booking.startTime.getTime();
-            const bookingEnd = new Date(booking.startTime.getTime() + booking.duration * 60000).getTime();
-            const bStart = b.startTime.getTime();
-            const bEnd = new Date(b.startTime.getTime() + b.duration * 60000).getTime();
+        // Sort all bookings in this slot by start time
+        const sortedBookings = [...allBookings].sort((a, b) =>
+            a.startTime.getTime() - b.startTime.getTime()
+        );
 
-            return (bookingStart < bEnd && bookingEnd > bStart);
-        });
+        // Find the index of the current booking
+        const index = sortedBookings.findIndex(b => b._id === booking._id);
 
-        // Find the first available row
-        const usedRows = overlappingBookings
-            .filter(b => b._id !== booking._id)
-            .map(b => b.row)
-            .filter(row => row !== undefined);
-
-        let row = 0;
-        while (usedRows.includes(row)) {
-            row++;
-        }
-
-        // Calculate height based on duration and position
-        const baseHeight = getBookingHeight(booking.duration);
-        const totalOverlapping = Math.max(...usedRows, row) + 1;
-        const adjustedHeight = baseHeight / totalOverlapping;
+        // Each booking is offset by 16px vertically
+        const offset = index * 16;
 
         return {
-            top: `${row * adjustedHeight}px`,
-            height: `${adjustedHeight}px`,
-            row
+            top: `${offset}px`,
+            height: `70px`,
+            row: index,
+            zIndex: 10 + index // ensure later bookings are on top
         };
     };
 
