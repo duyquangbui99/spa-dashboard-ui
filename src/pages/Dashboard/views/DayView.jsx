@@ -21,7 +21,10 @@ const DayView = ({
         const staffMap = new Map();
         bookings.forEach(booking => {
             if (booking.workerId && booking.workerId._id) {
-                staffMap.set(booking.workerId._id, booking.workerId);
+                // Only add staff if selectedStaff is 'all' or matches the selected staff
+                if (selectedStaff === 'all' || booking.workerId._id === selectedStaff) {
+                    staffMap.set(booking.workerId._id, booking.workerId);
+                }
             }
         });
         return Array.from(staffMap.values());
@@ -44,6 +47,11 @@ const DayView = ({
     // Filter bookings for a specific staff member
     const getStaffBookings = (timeSlot, staffId) => {
         let slotBookings = getBookingsForSlot(currentDate, timeSlot);
+        // If a specific staff is selected, only show their bookings
+        if (selectedStaff !== 'all') {
+            return slotBookings.filter(booking => booking.workerId?._id === selectedStaff);
+        }
+        // Otherwise show bookings for the staff member in this column
         return slotBookings.filter(booking => booking.workerId?._id === staffId);
     };
 
