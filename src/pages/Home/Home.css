@@ -94,6 +94,20 @@ body {
     }
 }
 
+.book-now-btn.disabled,
+.btn-primary.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.book-now-btn.disabled:hover,
+.btn-primary.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
 .mobile-menu-btn {
     display: block;
     color: var(--color-muted-text);
@@ -199,9 +213,21 @@ body {
     width: 100%;
 }
 
+.hero-buttons .booking-notification {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 8px;
+}
+
 @media (min-width: 640px) {
     .hero-buttons {
         flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .hero-buttons .booking-notification {
+        width: 100%;
+        margin-bottom: 8px;
     }
 }
 
@@ -306,6 +332,45 @@ a {
 @keyframes slideUp {
     from {
         transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.booking-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.booking-notification {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    max-width: 300px;
+    animation: slideDown 0.3s ease-out;
+}
+
+.notification-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-10px);
         opacity: 0;
     }
 

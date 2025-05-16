@@ -21,6 +21,7 @@ const Bookings = () => {
     const [isStaffDropdownOpen, setIsStaffDropdownOpen] = useState(false);
     const [staffSearchTerm, setStaffSearchTerm] = useState('');
     const [editingBooking, setEditingBooking] = useState(null);
+    const [allowBooking, setAllowBooking] = useState(false);
     const { role, workerId } = useAuth();
     //Get start and end dates for the current view
     const getStartAndEndDates = useCallback(() => {
@@ -354,6 +355,37 @@ const Bookings = () => {
         }
     };
 
+    // Add function to handle allow booking toggle
+    const handleAllowBookingToggle = async () => {
+        try {
+            const newValue = !allowBooking;
+            await axios.put('/api/setting/allowbooking', { allowBooking: newValue });
+            setAllowBooking(newValue);
+        } catch (err) {
+            console.error('Failed to update allow booking setting:', err);
+        }
+    };
+
+    // Add new useEffect for fetching allow booking setting
+    useEffect(() => {
+        const fetchAllowBookingSetting = async () => {
+            try {
+                const res = await axios.get('/api/setting/allowbooking');
+                setAllowBooking(res.data.allowBooking);
+            } catch (err) {
+                console.error('Failed to fetch allow booking setting:', err);
+                // If the setting doesn't exist yet, create it with default value true
+                try {
+                    await axios.post('/api/setting/allowbooking');
+                    setAllowBooking(true);
+                } catch (createErr) {
+                    console.error('Failed to create allow booking setting:', createErr);
+                }
+            }
+        };
+        fetchAllowBookingSetting();
+    }, []);
+
     if (loading) return (
         <div className="booking-loading">
             <div>Loading bookings...</div>
@@ -420,55 +452,72 @@ const Bookings = () => {
                     </button>
                 </div>
                 {role === 'admin' && (
-                    <div className="staff-dropdown">
-                        <div
-                            className="staff-dropdown-header"
-                            onClick={() => setIsStaffDropdownOpen(!isStaffDropdownOpen)}
-                        >
-                            <span>{selectedStaff === 'all' ? 'All Staff' : staff.find(s => s._id === selectedStaff)?.name || 'All Staff'}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                                <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
-                            </svg>
-                        </div>
-                        {isStaffDropdownOpen && (
-                            <div className="staff-dropdown-content">
-                                <div className="staff-search">
-                                    <input
-                                        type="text"
-                                        placeholder="Search staff..."
-                                        value={staffSearchTerm}
-                                        onChange={(e) => setStaffSearchTerm(e.target.value)}
-                                    />
-                                </div>
-                                <div className="staff-options">
-                                    <div
-                                        className={`staff-option ${selectedStaff === 'all' ? 'selected' : ''}`}
-                                        onClick={() => {
-                                            setSelectedStaff('all');
-                                            setIsStaffDropdownOpen(false);
-                                        }}
-                                    >
-                                        All Staff
+                    <>
+                        <div className="staff-dropdown">
+                            <div
+                                className="staff-dropdown-header"
+                                onClick={() => setIsStaffDropdownOpen(!isStaffDropdownOpen)}
+                            >
+                                <span>{selectedStaff === 'all' ? 'All Staff' : staff.find(s => s._id === selectedStaff)?.name || 'All Staff'}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                                    <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </div>
+                            {isStaffDropdownOpen && (
+                                <div className="staff-dropdown-content">
+                                    <div className="staff-search">
+                                        <input
+                                            type="text"
+                                            placeholder="Search staff..."
+                                            value={staffSearchTerm}
+                                            onChange={(e) => setStaffSearchTerm(e.target.value)}
+                                        />
                                     </div>
-                                    {filteredStaff().map(worker => (
+                                    <div className="staff-options">
                                         <div
-                                            key={worker._id}
-                                            className={`staff-option ${selectedStaff === worker._id ? 'selected' : ''}`}
+                                            className={`staff-option ${selectedStaff === 'all' ? 'selected' : ''}`}
                                             onClick={() => {
-                                                setSelectedStaff(worker._id);
+                                                setSelectedStaff('all');
                                                 setIsStaffDropdownOpen(false);
                                             }}
                                         >
-                                            {worker.name}
+                                            All Staff
                                         </div>
-                                    ))}
+                                        {filteredStaff().map(worker => (
+                                            <div
+                                                key={worker._id}
+                                                className={`staff-option ${selectedStaff === worker._id ? 'selected' : ''}`}
+                                                onClick={() => {
+                                                    setSelectedStaff(worker._id);
+                                                    setIsStaffDropdownOpen(false);
+                                                }}
+                                            >
+                                                {worker.name}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                        <div className="allow-booking-toggle">
+                            <label className="toggle-switch">
+                                <input
+                                    type="checkbox"
+                                    checked={allowBooking}
+                                    onChange={handleAllowBookingToggle}
+                                />
+                                <span className="toggle-slider"></span>
+                            </label>
+                            <span className="toggle-label">Allow Bookings</span>
+                        </div>
+                    </>
                 )}
 
-                <button className="add-booking-btn" onClick={() => setIsModalOpen(true)}>
+                <button
+                    className="add-booking-btn"
+                    onClick={() => setIsModalOpen(true)}
+                    disabled={!allowBooking}
+                >
                     + Add Booking
                 </button>
             </div>

@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from '../../utils/axiosInstance';
 import './Home.css';
 import bookingDashboard from '../../assets/images/booking-dashboard.png';
 import BookingModal from '../../components/BookingModal';
 
 const Home = () => {
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+    const [allowBooking, setAllowBooking] = useState(false);
+
+    useEffect(() => {
+        const fetchAllowBookingSetting = async () => {
+            try {
+                const res = await axios.get('/api/setting/allowbooking');
+                setAllowBooking(res.data.allowBooking);
+            } catch (err) {
+                console.error('Failed to fetch allow booking setting:', err);
+            }
+        };
+        fetchAllowBookingSetting();
+    }, []);
 
     const handleOpenBookingModal = () => {
+        if (!allowBooking) {
+            alert('Booking is currently disabled. Please try again later.');
+            return;
+        }
         console.log('Opening modal...'); // Debug log
         setIsBookingModalOpen(true);
     };
@@ -41,11 +59,12 @@ const Home = () => {
                     </nav>
 
                     <button
-                        className="book-now-btn"
+                        className={`book-now-btn ${!allowBooking ? 'disabled' : ''}`}
                         onClick={handleOpenBookingModal}
                         type="button"
+                        disabled={!allowBooking}
                     >
-                        Book Now
+                        {allowBooking ? 'Book Now' : 'Booking Disabled'}
                     </button>
                 </div>
             </header>
@@ -72,12 +91,21 @@ const Home = () => {
                             <h1 className="hero-title">Streamline Your Business with Smart Booking Management</h1>
                             <p className="hero-description">Take control of your appointments with our intuitive booking system. Manage schedules, track customer preferences, and grow your business with powerful analytics, automated reminders, social media integration, and seamless customer communication tools.</p>
                             <div className="hero-buttons">
+                                {!allowBooking && (
+                                    <div className="booking-notification">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="notification-icon" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                        </svg>
+                                        <span>We are currently busy and can't take any more appointments for today. Please walk in or try again tomorrow.</span>
+                                    </div>
+                                )}
                                 <button
-                                    className="btn-primary"
+                                    className={`btn-primary ${!allowBooking ? 'disabled' : ''}`}
                                     onClick={handleOpenBookingModal}
                                     type="button"
+                                    disabled={!allowBooking}
                                 >
-                                    Book Appointment
+                                    {allowBooking ? 'Book Appointment' : 'Booking Disabled'}
                                 </button>
                                 <Link to="/dashboard" className="btn-secondary">Dashboard</Link>
                             </div>
@@ -90,7 +118,7 @@ const Home = () => {
             </section>
 
             {/* Booking Modal */}
-            {isBookingModalOpen && (
+            {isBookingModalOpen && allowBooking && (
                 <BookingModal
                     isOpen={isBookingModalOpen}
                     onClose={handleCloseBookingModal}
