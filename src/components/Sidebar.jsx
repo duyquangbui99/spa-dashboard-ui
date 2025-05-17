@@ -23,7 +23,7 @@ const Sidebar = () => {
     // Check if window is in mobile view on mount and when resized
     useEffect(() => {
         const checkMobileView = () => {
-            setIsMobileView(window.innerWidth <= 768);
+            setIsMobileView(window.innerWidth <= 1200);
             setMobileNavOpen(false); // Close mobile nav on resize
         };
 

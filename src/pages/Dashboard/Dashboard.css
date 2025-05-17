@@ -127,3 +127,12 @@
         font-size: 1.5rem;
     }
 }
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+    .main-content {
+        margin-left: 0;
+        padding-top: 60px;
+        /* Space for mobile navbar */
+    }
+}

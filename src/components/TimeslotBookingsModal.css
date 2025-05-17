@@ -11,7 +11,7 @@
     z-index: 1000;
 }
 
-.modal-content {
+.timeslot-modal-content {
     background: white;
     border-radius: 12px;
     width: 90%;
@@ -131,9 +131,16 @@
 }
 
 @media (max-width: 768px) {
-    .modal-content {
+    .timeslot-modal-content {
         width: 95%;
         max-height: 90vh;
+        margin: 10vh 0 0 0;
+    }
+
+    .close-button {
+        top: 16px;
+        right: 16px;
+        z-index: 1002;
     }
 
     .booking-item {

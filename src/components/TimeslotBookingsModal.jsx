@@ -18,7 +18,7 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBo
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="timeslot-modal-content" onClick={e => e.stopPropagation()}>
                 <div className="timeslot-modal-header">
                     <h2>Bookings for {formatTime(bookings[0]?.startTime)}</h2>
                     <button className="close-button" onClick={onClose}>×</button>

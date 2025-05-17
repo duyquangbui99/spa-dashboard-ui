@@ -212,18 +212,12 @@
 }
 
 /* Responsive styles */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     .mobile-navbar {
         display: block;
     }
 
     .sidebar {
         display: none;
-    }
-
-    .main-content {
-        margin-left: 0;
-        padding-top: 60px;
-        /* Space for mobile navbar */
     }
 }
