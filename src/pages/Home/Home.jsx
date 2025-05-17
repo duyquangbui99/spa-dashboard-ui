@@ -7,7 +7,7 @@ import BookingModal from '../../components/BookingModal';
 
 const Home = () => {
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-    const [allowBooking, setAllowBooking] = useState(false);
+    const [allowBooking, setAllowBooking] = useState(true);
 
     useEffect(() => {
         const fetchAllowBookingSetting = async () => {

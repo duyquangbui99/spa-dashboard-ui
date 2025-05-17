@@ -409,50 +409,53 @@ const Bookings = () => {
             </div>
 
             <div className="controls-wrapper">
-                <div className="date-navigation">
-                    <button className="nav-btn" onClick={navigatePrevious}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
-                        </svg>
-                    </button>
-                    <div className="date-display">
-                        {viewMode === 'week' ? (
-                            `Week of ${getWeekStart(currentDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-                        ) : viewMode === 'day' ? (
-                            formatDateHeader(currentDate)
-                        ) : (
-                            currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-                        )}
+                <div className="controls-left">
+                    <div className="date-navigation">
+                        <button className="nav-btn" onClick={navigatePrevious}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fillRule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+                            </svg>
+                        </button>
+                        <div className="date-display">
+                            {viewMode === 'week' ? (
+                                `Week of ${getWeekStart(currentDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                            ) : viewMode === 'day' ? (
+                                formatDateHeader(currentDate)
+                            ) : (
+                                currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+                            )}
+                        </div>
+                        <button className="nav-btn" onClick={navigateNext}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                        </button>
                     </div>
-                    <button className="nav-btn" onClick={navigateNext}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fillRule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                    </button>
+
+                    <div className="view-options">
+                        <button
+                            className={`view-btn ${viewMode === 'day' ? 'active' : ''}`}
+                            onClick={() => setViewMode('day')}
+                        >
+                            Day
+                        </button>
+                        <button
+                            className={`view-btn ${viewMode === 'week' ? 'active' : ''}`}
+                            onClick={() => setViewMode('week')}
+                        >
+                            Week
+                        </button>
+                        <button
+                            className={`view-btn ${viewMode === 'month' ? 'active' : ''}`}
+                            onClick={() => setViewMode('month')}
+                        >
+                            Month
+                        </button>
+                    </div>
                 </div>
 
-                <div className="view-options">
-                    <button
-                        className={`view-btn ${viewMode === 'day' ? 'active' : ''}`}
-                        onClick={() => setViewMode('day')}
-                    >
-                        Day
-                    </button>
-                    <button
-                        className={`view-btn ${viewMode === 'week' ? 'active' : ''}`}
-                        onClick={() => setViewMode('week')}
-                    >
-                        Week
-                    </button>
-                    <button
-                        className={`view-btn ${viewMode === 'month' ? 'active' : ''}`}
-                        onClick={() => setViewMode('month')}
-                    >
-                        Month
-                    </button>
-                </div>
                 {role === 'admin' && (
-                    <>
+                    <div className="controls-right">
                         <div className="staff-dropdown">
                             <div
                                 className="staff-dropdown-header"
@@ -510,16 +513,15 @@ const Bookings = () => {
                             </label>
                             <span className="toggle-label">Allow Bookings</span>
                         </div>
-                    </>
+                        <button
+                            className="add-booking-btn"
+                            onClick={() => setIsModalOpen(true)}
+                            disabled={!allowBooking}
+                        >
+                            + Add Booking
+                        </button>
+                    </div>
                 )}
-
-                <button
-                    className="add-booking-btn"
-                    onClick={() => setIsModalOpen(true)}
-                    disabled={!allowBooking}
-                >
-                    + Add Booking
-                </button>
             </div>
 
             <BookingModal

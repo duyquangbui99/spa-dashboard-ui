@@ -50,11 +50,20 @@
 .controls-wrapper {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 24px;
     margin-bottom: 24px;
-    padding: 0 8px;
-    flex-wrap: wrap;
+}
+
+.controls-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.controls-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
 .staff-dropdown {
@@ -780,28 +789,29 @@
     .controls-wrapper {
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
-        margin-bottom: 16px;
+        gap: 16px;
+        padding: 0 8px;
     }
 
-    .staff-dropdown {
-        min-width: 100%;
-        max-width: none;
+    .controls-left {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .controls-right {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+        width: 100%;
+        padding: 8px 0;
     }
 
     .date-navigation {
         width: 100%;
         justify-content: space-between;
-    }
-
-    .date-display {
-        font-size: 15px;
-        min-width: 120px;
-    }
-
-    .nav-btn {
-        width: 32px;
-        height: 32px;
     }
 
     .view-options {
@@ -810,10 +820,25 @@
         min-width: 0;
     }
 
-    .view-btn {
+    .staff-dropdown {
+        min-width: 140px;
+        max-width: 160px;
         flex: 1;
-        padding: 6px 12px;
-        font-size: 13px;
+    }
+
+    .allow-booking-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    .add-booking-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 8px 12px;
+        font-size: 12px;
     }
 }
 
@@ -866,6 +891,19 @@
     .view-btn {
         padding: 4px 8px;
         font-size: 12px;
+    }
+
+    .staff-dropdown {
+        min-width: 120px;
+        max-width: 140px;
+    }
+
+    .toggle-label {
+        display: none;
+    }
+
+    .allow-booking-toggle {
+        margin: 0;
     }
 }
 
@@ -1477,7 +1515,7 @@
 }
 
 input:checked+.toggle-slider {
-    background-color: #2196F3;
+    background-color: var(--color-accent);
 }
 
 input:checked+.toggle-slider:before {
