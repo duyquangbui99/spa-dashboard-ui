@@ -21,7 +21,7 @@ const Bookings = () => {
     const [isStaffDropdownOpen, setIsStaffDropdownOpen] = useState(false);
     const [staffSearchTerm, setStaffSearchTerm] = useState('');
     const [editingBooking, setEditingBooking] = useState(null);
-    const [allowBooking, setAllowBooking] = useState(false);
+    const [allowBooking, setAllowBooking] = useState(true);
     const { role, workerId } = useAuth();
     //Get start and end dates for the current view
     const getStartAndEndDates = useCallback(() => {
@@ -356,7 +356,8 @@ const Bookings = () => {
     };
 
     // Add function to handle allow booking toggle
-    const handleAllowBookingToggle = async () => {
+    const handleAllowBookingToggle = async (e) => {
+        e.preventDefault(); // Prevent default touch behavior
         try {
             const newValue = !allowBooking;
             await axios.put('/api/setting/allowbooking', { allowBooking: newValue });
@@ -520,6 +521,7 @@ const Bookings = () => {
                                     type="checkbox"
                                     checked={allowBooking}
                                     onChange={handleAllowBookingToggle}
+                                    onClick={(e) => e.stopPropagation()}
                                 />
                                 <span className="toggle-slider"></span>
                             </label>

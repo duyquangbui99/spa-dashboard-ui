@@ -12,7 +12,9 @@ const Home = () => {
     useEffect(() => {
         const fetchAllowBookingSetting = async () => {
             try {
-                const res = await axios.get('/api/setting/allowbooking');
+                const res = await axios.get('/api/setting/allowbooking', {
+                    headers: { 'Cache-Control': 'no-cache' }
+                });
                 setAllowBooking(res.data.allowBooking);
             } catch (err) {
                 console.error('Failed to fetch allow booking setting:', err);
