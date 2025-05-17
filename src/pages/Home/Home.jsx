@@ -19,6 +19,16 @@ const Home = () => {
             }
         };
         fetchAllowBookingSetting();
+
+        // Listen for changes from other components
+        const handleAllowBookingChange = (event) => {
+            setAllowBooking(event.detail.allowBooking);
+        };
+
+        window.addEventListener('allowBookingChanged', handleAllowBookingChange);
+        return () => {
+            window.removeEventListener('allowBookingChanged', handleAllowBookingChange);
+        };
     }, []);
 
     const handleOpenBookingModal = () => {

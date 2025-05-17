@@ -1474,6 +1474,7 @@
     display: flex;
     align-items: center;
     margin: 0 15px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .toggle-switch {
@@ -1482,12 +1483,17 @@
     width: 50px;
     height: 24px;
     margin-right: 10px;
+    touch-action: manipulation;
 }
 
 .toggle-switch input {
     opacity: 0;
     width: 0;
     height: 0;
+    position: absolute;
+    z-index: 1;
+    cursor: pointer;
+    touch-action: manipulation;
 }
 
 .toggle-slider {
@@ -1500,6 +1506,7 @@
     background-color: #ccc;
     transition: .4s;
     border-radius: 24px;
+    touch-action: manipulation;
 }
 
 .toggle-slider:before {
@@ -1512,6 +1519,7 @@
     background-color: white;
     transition: .4s;
     border-radius: 50%;
+    touch-action: manipulation;
 }
 
 input:checked+.toggle-slider {
@@ -1525,6 +1533,25 @@ input:checked+.toggle-slider:before {
 .toggle-label {
     font-size: 14px;
     color: #666;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Add touch-specific styles */
+@media (hover: none) {
+    .toggle-switch {
+        min-width: 50px;
+        min-height: 24px;
+    }
+
+    .toggle-switch input {
+        width: 100%;
+        height: 100%;
+    }
+
+    .toggle-slider:before {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 }
 
 .add-booking-btn:disabled {
