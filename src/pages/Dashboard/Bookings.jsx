@@ -361,6 +361,8 @@ const Bookings = () => {
             const newValue = !allowBooking;
             await axios.put('/api/setting/allowbooking', { allowBooking: newValue });
             setAllowBooking(newValue);
+            // Broadcast the change to other components
+            window.dispatchEvent(new CustomEvent('allowBookingChanged', { detail: { allowBooking: newValue } }));
         } catch (err) {
             console.error('Failed to update allow booking setting:', err);
         }
@@ -384,6 +386,16 @@ const Bookings = () => {
             }
         };
         fetchAllowBookingSetting();
+
+        // Listen for changes from other components
+        const handleAllowBookingChange = (event) => {
+            setAllowBooking(event.detail.allowBooking);
+        };
+
+        window.addEventListener('allowBookingChanged', handleAllowBookingChange);
+        return () => {
+            window.removeEventListener('allowBookingChanged', handleAllowBookingChange);
+        };
     }, []);
 
     if (loading) return (
