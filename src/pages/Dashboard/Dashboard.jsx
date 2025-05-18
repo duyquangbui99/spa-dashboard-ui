@@ -96,7 +96,9 @@ const Dashboard = () => {
                 };
 
                 const now = new Date();
-                const upcomingToday = normalizeBookings(filteredAppointments).filter(booking => booking.startTime > now);
+                const upcomingToday = normalizeBookings(filteredAppointments)
+                    .filter(booking => booking.startTime > now)
+                    .sort((a, b) => a.startTime - b.startTime);
 
                 console.log('Upcoming appointments:', upcomingToday.map(b => ({
                     time: b.startTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
