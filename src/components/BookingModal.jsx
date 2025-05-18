@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import axios from '../utils/axiosInstance';
 import './BookingModal.css';
 
-const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
+const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData }) => {
     const [workers, setWorkers] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedWorker, setSelectedWorker] = useState(null);
@@ -254,6 +254,29 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
             }
         }
     }, [editingBooking]);
+
+    // Add new useEffect to handle initialData
+    useEffect(() => {
+        if (initialData) {
+            if (initialData.date) {
+                setSelectedDate(initialData.date);
+            }
+            if (initialData.time) {
+                setSelectedTime(initialData.time);
+            }
+            if (initialData.workerId) {
+                setSelectedWorker(initialData.workerId);
+                // Only jump to step 2 if we have a worker but no services
+                if (selectedServices.length === 0) {
+                    setCurrentStep(2);
+                }
+            }
+            // Only jump to step 3 if we have all required data
+            if (initialData.date && initialData.time && initialData.workerId && selectedServices.length > 0) {
+                setCurrentStep(3);
+            }
+        }
+    }, [initialData, selectedServices.length]);
 
     const handleNextStep = () => {
         if (currentStep < 6) {

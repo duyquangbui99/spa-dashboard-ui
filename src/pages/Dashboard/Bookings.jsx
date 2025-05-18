@@ -522,9 +522,6 @@ const Bookings = () => {
                                     type="checkbox"
                                     checked={allowBooking}
                                     onChange={handleAllowBookingToggle}
-                                    onClick={(e) => e.stopPropagation()}
-                                    onTouchStart={(e) => e.stopPropagation()}
-                                    onTouchEnd={(e) => e.stopPropagation()}
                                 />
                                 <span className="toggle-slider"></span>
                             </label>
@@ -567,6 +564,7 @@ const Bookings = () => {
                     onEditBooking={handleEditBooking}
                     onDeleteBooking={handleDeleteBooking}
                     categories={categories}
+                    onSuccess={fetchBookings}
                 />
             )}
             {/* Day view */}
@@ -585,6 +583,7 @@ const Bookings = () => {
                     onDeleteBooking={handleDeleteBooking}
                     workers={workers}
                     categories={categories}
+                    onSuccess={fetchBookings}
                 />
             )}
             {/* Month view */}
@@ -599,6 +598,7 @@ const Bookings = () => {
                     onDeleteBooking={handleDeleteBooking}
                     workers={workers}
                     categories={categories}
+                    onSuccess={fetchBookings}
                 />
             )}
 
