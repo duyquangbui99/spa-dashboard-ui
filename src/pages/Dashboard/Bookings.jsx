@@ -358,6 +358,7 @@ const Bookings = () => {
     // Add function to handle allow booking toggle
     const handleAllowBookingToggle = async (e) => {
         e.preventDefault(); // Prevent default touch behavior
+        e.stopPropagation(); // Stop event propagation
         try {
             const newValue = !allowBooking;
             await axios.put('/api/setting/allowbooking', { allowBooking: newValue });
@@ -522,6 +523,8 @@ const Bookings = () => {
                                     checked={allowBooking}
                                     onChange={handleAllowBookingToggle}
                                     onClick={(e) => e.stopPropagation()}
+                                    onTouchStart={(e) => e.stopPropagation()}
+                                    onTouchEnd={(e) => e.stopPropagation()}
                                 />
                                 <span className="toggle-slider"></span>
                             </label>
