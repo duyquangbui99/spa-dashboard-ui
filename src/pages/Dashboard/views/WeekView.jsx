@@ -25,7 +25,15 @@ const WeekView = ({
     const [selectedBookingData, setSelectedBookingData] = useState(null);
 
     const handleTimeslotClick = (day, time) => {
-        const slotBookings = getBookingsForSlot(day, time);
+        let slotBookings = getBookingsForSlot(day, time);
+
+        // Filter bookings based on selected staff
+        if (selectedStaff !== 'all') {
+            slotBookings = slotBookings.filter(
+                booking => booking.workerId?._id === selectedStaff
+            );
+        }
+
         const selectedDateTime = new Date(day);
         selectedDateTime.setHours(new Date(time).getHours(), new Date(time).getMinutes());
         const now = new Date();
@@ -37,14 +45,14 @@ const WeekView = ({
         }
 
         if (slotBookings.length === 0) {
-            // If no bookings, open the booking modal
+            // If no bookings for the selected staff, open the booking modal
             setSelectedBookingData({
                 date: day.toISOString().split('T')[0],
                 time: formatTime(new Date(time))
             });
             setIsBookingModalOpen(true);
         } else {
-            // If there are bookings, open the timeslot modal
+            // If there are bookings for the selected staff, open the timeslot modal
             setSelectedDay(day);
             setSelectedTimeslot(time);
         }
