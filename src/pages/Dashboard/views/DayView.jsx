@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import TimeslotBookingsModal from '../../../components/TimeslotBookingsModal';
+import BookingModal from '../../../components/BookingModal';
 
 const DayView = ({
     bookings,
@@ -14,7 +15,8 @@ const DayView = ({
     onEditBooking,
     onDeleteBooking,
     workers,
-    categories
+    categories,
+    onSuccess
 }) => {
     // Get unique staff members from bookings
     const getUniqueStaff = () => {
@@ -58,10 +60,34 @@ const DayView = ({
     // Modal state
     const [selectedTimeslot, setSelectedTimeslot] = useState(null);
     const [selectedStaffColumn, setSelectedStaffColumn] = useState(null);
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+    const [selectedBookingData, setSelectedBookingData] = useState(null);
 
     const handleTimeslotClick = (time, staffId) => {
-        setSelectedTimeslot(time);
-        setSelectedStaffColumn(staffId);
+        const staffBookings = getStaffBookings(time, staffId);
+        const selectedDateTime = new Date(currentDate);
+        selectedDateTime.setHours(new Date(time).getHours(), new Date(time).getMinutes());
+        const now = new Date();
+
+        if (selectedDateTime < now) {
+            // If the selected time is in the past, show an error message
+            alert('Cannot book a time slot in the past');
+            return;
+        }
+
+        if (staffBookings.length === 0) {
+            // If no bookings, open the booking modal
+            setSelectedBookingData({
+                date: currentDate.toISOString().split('T')[0],
+                time: formatTime(new Date(time)),
+                workerId: staffId
+            });
+            setIsBookingModalOpen(true);
+        } else {
+            // If there are bookings, open the timeslot modal
+            setSelectedTimeslot(time);
+            setSelectedStaffColumn(staffId);
+        }
     };
 
     return (
@@ -202,6 +228,23 @@ const DayView = ({
                 formatTime={formatTime}
                 onEditBooking={onEditBooking}
                 onDeleteBooking={onDeleteBooking}
+            />
+
+            <BookingModal
+                isOpen={isBookingModalOpen}
+                onClose={() => {
+                    setIsBookingModalOpen(false);
+                    setSelectedBookingData(null);
+                }}
+                initialData={selectedBookingData}
+                onSuccess={() => {
+                    setIsBookingModalOpen(false);
+                    setSelectedBookingData(null);
+                    // Refresh bookings
+                    if (typeof onSuccess === 'function') {
+                        onSuccess();
+                    }
+                }}
             />
         </div>
     );

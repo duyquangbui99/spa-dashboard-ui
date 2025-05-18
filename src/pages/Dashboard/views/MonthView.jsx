@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import TimeslotBookingsModal from '../../../components/TimeslotBookingsModal';
+import BookingModal from '../../../components/BookingModal';
 
 const MonthView = ({
     bookings,
@@ -10,9 +11,12 @@ const MonthView = ({
     onEditBooking,
     onDeleteBooking,
     workers,
-    categories
+    categories,
+    onSuccess
 }) => {
     const [selectedDay, setSelectedDay] = useState(null);
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+    const [selectedBookingData, setSelectedBookingData] = useState(null);
 
     const getDaysInMonth = (date) => {
         const year = date.getFullYear();
@@ -89,6 +93,29 @@ const MonthView = ({
     const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const currentMonthBookings = getCurrentMonthBookings();
 
+    const handleDayClick = (day) => {
+        const dayBookings = getBookingsForDay(day);
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // Reset time to start of day for comparison
+
+        if (day < now) {
+            // If the selected day is in the past, show an error message
+            alert('Cannot book a day in the past');
+            return;
+        }
+
+        if (dayBookings.length === 0) {
+            // If no bookings, open the booking modal
+            setSelectedBookingData({
+                date: day.toISOString().split('T')[0]
+            });
+            setIsBookingModalOpen(true);
+        } else {
+            // If there are bookings, open the timeslot modal
+            setSelectedDay(day);
+        }
+    };
+
     return (
         <div className="month-view-container">
             {currentMonthBookings.length > 0 && (
@@ -109,7 +136,12 @@ const MonthView = ({
                     const cellClasses = `month-day-cell ${isToday(day) ? 'today' : ''} ${isCurrentMonth(day) ? 'current-month' : 'other-month'}`;
 
                     return (
-                        <div key={index} className={cellClasses} onClick={() => setSelectedDay(day)} style={{ cursor: 'pointer' }}>
+                        <div
+                            key={index}
+                            className={cellClasses}
+                            onClick={() => handleDayClick(day)}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <div className="month-day-number">
                                 {day.getDate()}
                             </div>
@@ -153,6 +185,23 @@ const MonthView = ({
                 formatTime={formatTime}
                 onEditBooking={onEditBooking}
                 onDeleteBooking={onDeleteBooking}
+            />
+
+            <BookingModal
+                isOpen={isBookingModalOpen}
+                onClose={() => {
+                    setIsBookingModalOpen(false);
+                    setSelectedBookingData(null);
+                }}
+                initialData={selectedBookingData}
+                onSuccess={() => {
+                    setIsBookingModalOpen(false);
+                    setSelectedBookingData(null);
+                    // Refresh bookings
+                    if (typeof onSuccess === 'function') {
+                        onSuccess();
+                    }
+                }}
             />
         </div>
     );

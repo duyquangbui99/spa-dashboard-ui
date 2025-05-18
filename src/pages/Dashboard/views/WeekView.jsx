@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import TimeslotBookingsModal from '../../../components/TimeslotBookingsModal';
+import BookingModal from '../../../components/BookingModal';
 
 const WeekView = ({
     bookings,
@@ -15,14 +16,38 @@ const WeekView = ({
     workers,
     onEditBooking,
     onDeleteBooking,
-    categories
+    categories,
+    onSuccess
 }) => {
     const [selectedTimeslot, setSelectedTimeslot] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+    const [selectedBookingData, setSelectedBookingData] = useState(null);
 
     const handleTimeslotClick = (day, time) => {
-        setSelectedDay(day);
-        setSelectedTimeslot(time);
+        const slotBookings = getBookingsForSlot(day, time);
+        const selectedDateTime = new Date(day);
+        selectedDateTime.setHours(new Date(time).getHours(), new Date(time).getMinutes());
+        const now = new Date();
+
+        if (selectedDateTime < now) {
+            // If the selected time is in the past, show an error message
+            alert('Cannot book a time slot in the past');
+            return;
+        }
+
+        if (slotBookings.length === 0) {
+            // If no bookings, open the booking modal
+            setSelectedBookingData({
+                date: day.toISOString().split('T')[0],
+                time: formatTime(new Date(time))
+            });
+            setIsBookingModalOpen(true);
+        } else {
+            // If there are bookings, open the timeslot modal
+            setSelectedDay(day);
+            setSelectedTimeslot(time);
+        }
     };
 
     const getCurrentWeekBookings = () => {
@@ -179,6 +204,23 @@ const WeekView = ({
                 formatTime={formatTime}
                 onEditBooking={onEditBooking}
                 onDeleteBooking={onDeleteBooking}
+            />
+
+            <BookingModal
+                isOpen={isBookingModalOpen}
+                onClose={() => {
+                    setIsBookingModalOpen(false);
+                    setSelectedBookingData(null);
+                }}
+                initialData={selectedBookingData}
+                onSuccess={() => {
+                    setIsBookingModalOpen(false);
+                    setSelectedBookingData(null);
+                    // Refresh bookings
+                    if (typeof onSuccess === 'function') {
+                        onSuccess();
+                    }
+                }}
             />
         </div>
     );
