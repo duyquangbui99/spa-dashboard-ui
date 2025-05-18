@@ -392,6 +392,32 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess }) => {
         w.name.toLowerCase().includes(stylistSearch.toLowerCase())
     );
 
+    // Add effect to handle body scroll lock
+    useEffect(() => {
+        if (isOpen) {
+            // Save current scroll position
+            const scrollY = window.scrollY;
+            // Add styles to prevent background scrolling
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.width = '100%';
+        } else {
+            // Restore scroll position and remove styles
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, parseInt(scrollY || '0') * -1);
+        }
+
+        // Cleanup function
+        return () => {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+        };
+    }, [isOpen]);
+
     if (!isOpen) return null;
 
     return (
