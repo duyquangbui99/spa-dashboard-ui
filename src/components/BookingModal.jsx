@@ -51,13 +51,19 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData 
                 return;
             }
 
-            console.log('Selected Worker:', worker);
-            console.log('Selected Date:', selectedDate);
-
             const totalDuration = selectedServices.reduce((acc, id) => {
                 const svc = worker.services.find(s => s._id === id);
                 return acc + (svc?.duration || 0);
             }, 0);
+
+            // Create date objects for comparison (using local midnight)
+            const [year, month, day] = selectedDate.split('-').map(Number);
+            const selectedDateLocal = new Date(year, month - 1, day); // months are 0-based
+            console.log('Selected Date Local:', selectedDateLocal);
+
+            // Check if the selected date is a working day for the worker
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const selectedDayName = days[selectedDateLocal.getDay()];
 
             // If the selected worker is "Anyone", show all available slots without checking bookings
             if (worker.name === "Anyone") {
@@ -71,9 +77,12 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData 
 
                 const slots = [];
                 for (let time = start; time + totalDuration <= end; time += 15) {
+                    const timeStr = formatTime(time);
+                    // Check if it's Sunday and after 6 PM
+                    const isAfter6PM = selectedDayName === 'Sunday' && time >= parseTime('18:00');
                     slots.push({
-                        time: formatTime(time),
-                        available: true
+                        time: timeStr,
+                        available: !isAfter6PM
                     });
                 }
 
@@ -81,10 +90,49 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData 
                 return;
             }
 
-            // Create date objects for comparison (using local midnight)
-            const [year, month, day] = selectedDate.split('-').map(Number);
-            const selectedDateLocal = new Date(year, month - 1, day); // months are 0-based
-            console.log('Selected Date Local:', selectedDateLocal);
+            // Check if it's Sunday and handle special closing time
+            if (selectedDayName === 'Sunday') {
+                const start = parseTime(worker.workingHours.start);
+                const end = parseTime(worker.workingHours.end);
+                const slots = [];
+
+                if (!worker.workingDays?.includes('Sunday')) {
+                    // If worker doesn't work on Sunday, set all slots as unavailable
+                    for (let time = start; time + totalDuration <= end; time += 15) {
+                        slots.push({
+                            time: formatTime(time),
+                            available: false
+                        });
+                    }
+                } else {
+                    // If worker works on Sunday, create slots with 6 PM cutoff
+                    for (let time = start; time + totalDuration <= end; time += 15) {
+                        const timeStr = formatTime(time);
+                        const isAfter6PM = time >= parseTime('18:00');
+                        slots.push({
+                            time: timeStr,
+                            available: !isAfter6PM
+                        });
+                    }
+                }
+                setAvailableTimeSlots(slots);
+                return;
+            }
+
+            if (!worker.workingDays?.includes(selectedDayName)) {
+                // If it's not a working day, set all slots as unavailable
+                const start = parseTime(worker.workingHours.start);
+                const end = parseTime(worker.workingHours.end);
+                const slots = [];
+                for (let time = start; time + totalDuration <= end; time += 15) {
+                    slots.push({
+                        time: formatTime(time),
+                        available: false
+                    });
+                }
+                setAvailableTimeSlots(slots);
+                return;
+            }
 
             // Fetch worker's bookings
             const fetchWorkerBookings = async () => {
