@@ -76,13 +76,21 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData 
                 const end = parseTime(worker.workingHours.end);
 
                 const slots = [];
+
                 for (let time = start; time + totalDuration <= end; time += 15) {
                     const timeStr = formatTime(time);
                     // Check if it's Sunday and after 6 PM
                     const isAfter6PM = selectedDayName === 'Sunday' && time >= parseTime('18:00');
+
+                    // Check if the time slot is in the past
+                    const currentDate = new Date();
+                    const [year, month, day] = selectedDate.split('-').map(Number);
+                    const slotDateTime = new Date(year, month - 1, day, Math.floor(time / 60), time % 60);
+                    const isPastTime = slotDateTime <= currentDate;
+
                     slots.push({
                         time: timeStr,
-                        available: !isAfter6PM
+                        available: !isAfter6PM && !isPastTime
                     });
                 }
 
@@ -211,6 +219,14 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData 
                     for (let time = start; time + totalDuration <= end; time += 15) {
                         let timeStr = formatTime(time);
                         let isSlotAvailable = true;
+
+                        // Check if the time slot is in the past
+                        const currentDate = new Date();
+                        const [year, month, day] = selectedDate.split('-').map(Number);
+                        const slotDateTime = new Date(year, month - 1, day, Math.floor(time / 60), time % 60);
+                        if (slotDateTime <= currentDate) {
+                            isSlotAvailable = false;
+                        }
 
                         // Check if any part of the service duration overlaps with taken slots
                         for (let i = 0; i < totalDuration; i += 15) {
