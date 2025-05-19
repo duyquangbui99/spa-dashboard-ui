@@ -357,7 +357,6 @@ const Bookings = () => {
 
     // Add function to handle allow booking toggle
     const handleAllowBookingToggle = async (e) => {
-        e.preventDefault(); // Prevent default touch behavior
         e.stopPropagation(); // Stop event propagation
         try {
             const newValue = !allowBooking;
