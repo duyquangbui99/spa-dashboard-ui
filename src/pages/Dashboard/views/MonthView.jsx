@@ -98,16 +98,19 @@ const MonthView = ({
         const now = new Date();
         now.setHours(0, 0, 0, 0); // Reset time to start of day for comparison
 
-        if (day < now) {
-            // If the selected day is in the past, show an error message
-            alert('Cannot book a day in the past');
-            return;
-        }
-
         if (dayBookings.length === 0) {
+            // Only check for past time when creating new bookings
+            if (day < now) {
+                // If the selected day is in the past, show an error message
+                alert('Cannot book a day in the past');
+                return;
+            }
             // If no bookings, open the booking modal
+            const year = day.getFullYear();
+            const month = String(day.getMonth() + 1).padStart(2, '0');
+            const date = String(day.getDate()).padStart(2, '0');
             setSelectedBookingData({
-                date: day.toISOString().split('T')[0]
+                date: `${year}-${month}-${date}`
             });
             setIsBookingModalOpen(true);
         } else {

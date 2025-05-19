@@ -108,9 +108,16 @@
 }
 
 .step.active::before {
-    background: #fff;
+    background: var(--color-accent);
     border: 2px solid var(--color-accent);
     box-shadow: 0 2px 8px var(--color-accent, #6fdd8b, 0.08);
+    content: '✓';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1;
 }
 
 .close-button {
