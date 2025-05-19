@@ -200,7 +200,9 @@ const DayView = ({
                                                         position: 'absolute',
                                                         zIndex: position.zIndex || (bookingIndex + 1),
                                                         backgroundColor: category ? category.color : 'var(--color-background)',
-                                                        borderLeftColor: category ? category.color : 'var(--color-button-border)'
+                                                        borderLeftColor: category
+                                                            ? `#${[...category.color.slice(1).match(/.{2}/g)].map(c => (Math.max(0, parseInt(c, 16) - 10)).toString(16).padStart(2, '0')).join('')}`
+                                                            : 'var(--color-button-border)'
                                                     }}
                                                     title={`${booking.customerName} - ${serviceDisplay}`}
                                                 >
