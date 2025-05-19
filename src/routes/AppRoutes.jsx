@@ -13,7 +13,8 @@ const Posts = lazy(() => import('../pages/Dashboard/Posts'));
 const DashboardLayout = lazy(() => import('../pages/Dashboard/DashboardLayout'));
 
 const ProtectedRoute = ({ children }) => {
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, loading } = useAuth();
+    if (loading) return <div>Loading...</div>;
     return isLoggedIn ? children : <Navigate to="/login" />;
 };
 
