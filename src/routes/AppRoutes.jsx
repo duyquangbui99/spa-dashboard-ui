@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { lazy, Suspense } from 'react';
 
@@ -12,13 +12,23 @@ const Staffs = lazy(() => import('../pages/Dashboard/Staffs'));
 const Posts = lazy(() => import('../pages/Dashboard/Posts'));
 const DashboardLayout = lazy(() => import('../pages/Dashboard/DashboardLayout'));
 
+
 const ProtectedRoute = ({ children }) => {
     const { isLoggedIn, loading } = useAuth();
+    const location = useLocation();
+
     if (loading) return <div>Loading...</div>;
-    return isLoggedIn ? children : <Navigate to="/login" />;
+
+    if (!isLoggedIn) {
+        return <Navigate to="/login" replace state={{ from: location }} />;
+    }
+
+    return children;
 };
 
 export default function AppRoutes() {
+    const { loading } = useAuth();
+    if (loading) return <div>Loading...</div>;
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Routes>
