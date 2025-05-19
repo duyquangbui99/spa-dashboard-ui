@@ -357,7 +357,6 @@ const Bookings = () => {
 
     // Add function to handle allow booking toggle
     const handleAllowBookingToggle = async (e) => {
-        e.stopPropagation(); // Stop event propagation
         try {
             const newValue = !allowBooking;
             await axios.put('/api/setting/allowbooking', { allowBooking: newValue });
