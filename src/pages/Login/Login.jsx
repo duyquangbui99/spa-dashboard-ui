@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import axios from '../../utils/axiosInstance';
 import './Login.css';
@@ -9,6 +9,7 @@ const Login = () => {
     const [pin, setPin] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const location = useLocation(); // ⬅️ Get previous location
     const { login } = useAuth();
 
     const handleSubmit = async (e) => {
@@ -17,12 +18,11 @@ const Login = () => {
 
         try {
             const res = await axios.post('/api/auth/login', { name, pin });
-
             const { role, workerId } = res.data;
-
-
             login(name, role, workerId); // sets isLoggedIn and role in context
-            navigate('/dashboard');
+
+            const redirectPath = location.state?.from?.pathname || '/dashboard'; // ⬅️ Use saved location or default
+            navigate(redirectPath, { replace: true });
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed');
         }
