@@ -7,7 +7,7 @@ const DashboardLayout = () => {
 
     useEffect(() => {
         const checkMobileView = () => {
-            setIsMobileView(window.innerWidth <= 768);
+            setIsMobileView(window.innerWidth <= 1200);
         };
 
         checkMobileView();
