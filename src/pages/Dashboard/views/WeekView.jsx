@@ -38,16 +38,19 @@ const WeekView = ({
         selectedDateTime.setHours(new Date(time).getHours(), new Date(time).getMinutes());
         const now = new Date();
 
-        if (selectedDateTime < now) {
-            // If the selected time is in the past, show an error message
-            alert('Cannot book a time slot in the past');
-            return;
-        }
-
         if (slotBookings.length === 0) {
+            // Only check for past time when creating new bookings
+            if (selectedDateTime < now) {
+                // If the selected time is in the past, show an error message
+                alert('Cannot book a time slot in the past');
+                return;
+            }
             // If no bookings for the selected staff, open the booking modal
+            const year = day.getFullYear();
+            const month = String(day.getMonth() + 1).padStart(2, '0');
+            const date = String(day.getDate()).padStart(2, '0');
             setSelectedBookingData({
-                date: day.toISOString().split('T')[0],
+                date: `${year}-${month}-${date}`,
                 time: formatTime(new Date(time))
             });
             setIsBookingModalOpen(true);

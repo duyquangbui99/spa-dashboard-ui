@@ -1,7 +1,8 @@
 import React from 'react';
 import './TimeslotBookingsModal.css';
+import { Pencil, Trash2 } from 'lucide-react';
 
-const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBooking, onDeleteBooking }) => {
+const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBooking, onDeleteBooking, categories, workers }) => {
     if (!isOpen) return null;
 
     const handleEdit = (booking) => {
@@ -14,6 +15,24 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBo
             await onDeleteBooking(bookingId);
             onClose();
         }
+    };
+
+    const getServiceColor = (booking) => {
+        if (!booking.services?.[0]?.serviceId) {
+            return 'var(--color-accent)';
+        }
+
+        const service = booking.services[0].serviceId;
+
+        // If service is an object with categoryId
+        if (typeof service === 'object' && service.categoryId) {
+            const category = categories.find(cat => cat._id === service.categoryId);
+            if (category) {
+                return category.color;
+            }
+        }
+
+        return 'var(--color-accent)';
     };
 
     return (
@@ -29,13 +48,20 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBo
                     ) : (
                         <div className="bookings-list">
                             {bookings.map(booking => (
-                                <div key={booking._id} className="booking-item">
+                                <div
+                                    key={booking._id}
+                                    className="booking-item"
+                                    style={{ borderLeft: `4px solid ${getServiceColor(booking)}` }}
+                                >
                                     <div className="booking-time">
                                         {formatTime(booking.startTime)}
                                     </div>
                                     <div className="booking-details">
                                         <div className="booking-customer">
-                                            {booking.customerName}
+                                            <span className="customer-name">{booking.customerName}</span>
+                                            {booking.customerPhone && (
+                                                <span className="customer-phone">{booking.customerPhone}</span>
+                                            )}
                                         </div>
                                         <div className="booking-service">
                                             {booking.serviceIds
@@ -57,16 +83,18 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBo
                                         )}
                                         <div className="booking-actions">
                                             <button
-                                                className="edit-button"
+                                                className="icon-button edit-button"
                                                 onClick={() => handleEdit(booking)}
+                                                title="Edit booking"
                                             >
-                                                Edit
+                                                <Pencil size={16} />
                                             </button>
                                             <button
-                                                className="delete-button"
+                                                className="icon-button delete-button"
                                                 onClick={() => handleDelete(booking._id)}
+                                                title="Delete booking"
                                             >
-                                                Delete
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
                                     </div>

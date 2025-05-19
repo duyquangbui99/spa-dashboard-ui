@@ -69,16 +69,19 @@ const DayView = ({
         selectedDateTime.setHours(new Date(time).getHours(), new Date(time).getMinutes());
         const now = new Date();
 
-        if (selectedDateTime < now) {
-            // If the selected time is in the past, show an error message
-            alert('Cannot book a time slot in the past');
-            return;
-        }
-
         if (staffBookings.length === 0) {
+            // Only check for past time when creating new bookings
+            if (selectedDateTime < now) {
+                // If the selected time is in the past, show an error message
+                alert('Cannot book a time slot in the past');
+                return;
+            }
             // If no bookings, open the booking modal
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const date = String(currentDate.getDate()).padStart(2, '0');
             setSelectedBookingData({
-                date: currentDate.toISOString().split('T')[0],
+                date: `${year}-${month}-${date}`,
                 time: formatTime(new Date(time)),
                 workerId: staffId
             });
