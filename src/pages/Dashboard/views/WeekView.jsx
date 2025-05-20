@@ -67,8 +67,12 @@ const WeekView = ({
                 return false;
             }
             const bookingDate = new Date(booking.startTime);
-            const weekStart = weekDays[0];
-            const weekEnd = weekDays[weekDays.length - 1];
+            const weekStart = new Date(weekDays[0]);
+            weekStart.setHours(0, 0, 0, 0);
+
+            const weekEnd = new Date(weekDays[weekDays.length - 1]);
+            weekEnd.setHours(23, 59, 59, 999);
+
             return bookingDate >= weekStart && bookingDate <= weekEnd;
         });
     };
