@@ -4,9 +4,12 @@ import axios from '../../utils/axiosInstance';
 import './Home.css';
 import bookingDashboard from '../../assets/images/booking-dashboard.png';
 import BookingModal from '../../components/BookingModal';
+import Confirmation from '../../components/Confirmation';
 
 const Home = () => {
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+    const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+    const [bookingDetails, setBookingDetails] = useState(null);
     const [allowBooking, setAllowBooking] = useState(true);
 
     useEffect(() => {
@@ -47,11 +50,24 @@ const Home = () => {
         setIsBookingModalOpen(false);
     };
 
-    const handleBookingSuccess = () => {
-        console.log('Booking successful!'); // Debug log
+    const handleBookingSuccess = (details) => {
+        console.log('Booking successful!', details); // Debug log
         setIsBookingModalOpen(false);
-        // You can add additional success handling here if needed
+        setBookingDetails(details);
+        console.log('Setting confirmation state:', { isOpen: true, details });
+        setIsConfirmationOpen(true);
     };
+
+    const handleCloseConfirmation = () => {
+        console.log('Closing confirmation modal');
+        setIsConfirmationOpen(false);
+        setBookingDetails(null);
+    };
+
+    // Add debug log for confirmation modal state
+    useEffect(() => {
+        console.log('Confirmation modal state:', { isOpen: isConfirmationOpen, details: bookingDetails });
+    }, [isConfirmationOpen, bookingDetails]);
 
     return (
         <>
@@ -137,6 +153,13 @@ const Home = () => {
                     onSuccess={handleBookingSuccess}
                 />
             )}
+
+            {/* Confirmation Modal */}
+            <Confirmation
+                isOpen={isConfirmationOpen}
+                onClose={handleCloseConfirmation}
+                bookingDetails={bookingDetails}
+            />
         </>
     );
 };
