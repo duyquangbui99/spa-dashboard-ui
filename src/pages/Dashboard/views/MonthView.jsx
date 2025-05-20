@@ -69,10 +69,16 @@ const MonthView = ({
                 return false;
             }
             const bookingDate = new Date(booking.startTime);
-            return (
-                bookingDate.getMonth() === currentDate.getMonth() &&
-                bookingDate.getFullYear() === currentDate.getFullYear()
-            );
+
+            // Get start of month
+            const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            monthStart.setHours(0, 0, 0, 0);
+
+            // Get end of month
+            const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            monthEnd.setHours(23, 59, 59, 999);
+
+            return bookingDate >= monthStart && bookingDate <= monthEnd;
         });
     };
 
