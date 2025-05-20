@@ -385,19 +385,35 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData 
                 startTime: new Date(`${selectedDate}T${selectedTime}`).toISOString()
             };
 
+            console.log('Submitting booking data:', bookingData);
+
+            let response;
             if (editingBooking) {
                 // Update existing booking
-                await axios.put(`/api/bookings/${editingBooking._id}`, bookingData);
+                response = await axios.put(`/api/bookings/${editingBooking._id}`, bookingData);
             } else {
                 // Create new booking
-                await axios.post('/api/bookings', bookingData);
+                response = await axios.post('/api/bookings', bookingData);
             }
+
+            console.log('Booking response:', response.data);
 
             resetForm();
             onClose();
-            // Instead of reloading the page, we'll let the parent component handle the refresh
+            // Pass the booking details to the onSuccess callback
             if (typeof onSuccess === 'function') {
-                onSuccess();
+                const worker = workers.find(w => w._id === selectedWorker);
+                const bookingDetails = {
+                    date: selectedDate,
+                    time: selectedTime,
+                    service: selectedServices.map(serviceId => {
+                        const service = worker?.services.find(s => s._id === serviceId);
+                        return service ? service.name : '';
+                    }).join(', '),
+                    bookingId: response.data.booking?._id || response.data._id // Handle both nested and direct response structures
+                };
+                console.log('Passing booking details to confirmation:', bookingDetails);
+                onSuccess(bookingDetails);
             }
         } catch (err) {
             console.error('Error saving booking:', err);

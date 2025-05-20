@@ -1,0 +1,136 @@
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirmation-modal {
+    background-color: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.confirmation-close-button {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    background: none;
+    border: none;
+    color: #6B7280;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.confirmation-close-button:hover {
+    background-color: #F3F4F6;
+    color: #374151;
+}
+
+.confirmation-content {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.confirmation-icon {
+    color: #10B981;
+    margin-bottom: 16px;
+}
+
+.confirmation-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 16px;
+}
+
+.confirmation-message {
+    color: #6B7280;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.confirmation-note {
+    display: block;
+    margin-top: 12px;
+    padding: 12px;
+    background-color: #F0FDF4;
+    border: 1px solid #DCFCE7;
+    border-radius: 8px;
+    color: #166534;
+    font-size: 0.95rem;
+    font-style: italic;
+}
+
+.confirmation-details {
+    background-color: #F9FAFB;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+.confirmation-details h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #111827;
+    margin-bottom: 16px;
+}
+
+.details-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: #6B7280;
+    font-weight: 500;
+}
+
+.detail-value {
+    color: #111827;
+    font-weight: 500;
+    text-align: right;
+}
+
+.confirmation-button {
+    background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.confirmation-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
