@@ -79,7 +79,8 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData 
 
                 for (let time = start; time + totalDuration <= end; time += 15) {
                     const timeStr = formatTime(time);
-                    // Check if it's Sunday and after 6 PM
+                    // Check if it's Sunday and before 11 AM or after 6 PM
+                    const isBefore11AM = selectedDayName === 'Sunday' && time < parseTime('11:00');
                     const isAfter6PM = selectedDayName === 'Sunday' && time >= parseTime('18:00');
 
                     // Check if the time slot is in the past
@@ -90,7 +91,7 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData 
 
                     slots.push({
                         time: timeStr,
-                        available: !isAfter6PM && !isPastTime
+                        available: !isBefore11AM && !isAfter6PM && !isPastTime
                     });
                 }
 
@@ -113,13 +114,14 @@ const BookingModal = ({ isOpen, onClose, editingBooking, onSuccess, initialData 
                         });
                     }
                 } else {
-                    // If worker works on Sunday, create slots with 6 PM cutoff
+                    // If worker works on Sunday, create slots with 11 AM start and 6 PM cutoff
                     for (let time = start; time + totalDuration <= end; time += 15) {
                         const timeStr = formatTime(time);
+                        const isBefore11AM = time < parseTime('11:00');
                         const isAfter6PM = time >= parseTime('18:00');
                         slots.push({
                             time: timeStr,
-                            available: !isAfter6PM
+                            available: !isBefore11AM && !isAfter6PM
                         });
                     }
                 }
