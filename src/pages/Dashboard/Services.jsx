@@ -170,7 +170,7 @@ const Services = () => {
 
             {isModalOpen && (
                 <div className="modal-overlay">
-                    <div className="modal-content">
+                    <div className="services-modal-content">
                         <div className="modal-header">
                             <h3>{editingId ? 'Edit' : 'Create'} {view === 'services' ? 'Service' : 'Category'}</h3>
                             <button className="close-button" onClick={resetForm}>&times;</button>
