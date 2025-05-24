@@ -1,9 +1,9 @@
 /* Desktop Sidebar Styles */
 .sidebar {
-    width: 250px;
+    width: 260px;
     height: 100vh;
-    background-color: #f7fef7;
-    border-right: 1px solid #f0f0f0;
+    background: #f7fef7;
+    border-right: 1px solid #d1fae5;
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -12,104 +12,113 @@
     bottom: 0;
     overflow-y: auto;
     z-index: 1000;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-header {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.06) 0%, transparent 100%);
 }
 
 .sidebar-header h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #3CB371;
-    /* Brevo-like green */
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #3cb371;
     margin: 0;
+    letter-spacing: -0.01em;
 }
 
 .sidebar-header p {
-    font-size: 1rem;
-    color: #3CB371;
-    /* Match the green */
-    margin: 0;
+    font-size: 0.9rem;
+    color: #22c55e;
+    margin: 0.5rem 0 0 0;
+    font-weight: 500;
 }
 
 .sidebar-nav {
     flex: 1;
     display: flex;
     flex-direction: column;
+    padding: 1rem 0.75rem;
+    gap: 0.25rem;
 }
 
 .sidebar-nav button {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 1rem 1.5rem;
-    background: none;
-    border: none;
+    padding: 0.875rem 1.25rem;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid transparent;
+    border-radius: 12px;
     text-align: left;
-    font-size: 1rem;
-    color: #333;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #166534;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin: 2px;
-    margin-left: 10px;
-    max-width: 220px;
+    transition: all 0.2s ease;
+    position: relative;
 }
 
 .sidebar-nav button:hover {
-    background-color: #e8fede;
+    background: #e8fede;
+    border-color: rgba(34, 197, 94, 0.2);
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.1);
 }
 
 .sidebar-nav button.active {
-    background-color: #d7fec8;
-    /* Light green background for active item */
-    color: #333;
-    font-weight: 700;
+    background: #d7fec8;
+    border-color: #22c55e;
+    color: #166534;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15);
 }
 
 .sidebar-nav button.active:hover {
-    background-color: #d7fec8;
-    color: #222;
-    font-weight: 700;
-}
-
-.sidebar-nav button:hover,
-.sidebar-nav button.active,
-.sidebar-nav button.active:hover {
-    border-radius: 1rem;
+    background: #d7fec8;
+    transform: translateX(2px);
 }
 
 .sidebar-nav button svg {
-    color: #333;
+    color: inherit;
     min-width: 20px;
+    transition: color 0.2s ease;
+}
+
+.sidebar-nav button:hover svg,
+.sidebar-nav button.active svg {
+    color: #22c55e;
 }
 
 .sidebar-footer {
-    padding: 1rem 1.5rem;
-    border-top: 1px solid #f0f0f0;
+    padding: 1rem 0.75rem 1.5rem 0.75rem;
 }
 
 .sidebar-footer button {
-    background-color: #e8fede;
-    color: #222;
-    border: none;
-    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, rgba(220, 38, 38, 0.04) 100%);
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    border-radius: 12px;
     font-weight: 600;
-    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    padding: 0.875rem 1.25rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
     width: 100%;
     cursor: pointer;
-    transition: background-color 0.2s;
-    margin-top: 8px;
+    transition: all 0.2s ease;
 }
 
 .sidebar-footer button:hover {
-    background-color: #d7fec8;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.12) 0%, rgba(220, 38, 38, 0.06) 100%);
+    border-color: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);
 }
 
 /* Mobile Navbar Styles */
@@ -120,8 +129,8 @@
     top: 0;
     left: 0;
     right: 0;
-    background-color: #f7fef7;
-    border-bottom: 1px solid #f0f0f0;
+    background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%);
+    border-bottom: 1px solid #d1fae5;
     z-index: 1000;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -136,7 +145,7 @@
 .mobile-navbar-header h1 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #3CB371;
+    color: #22c55e;
     margin: 0;
 }
 
@@ -148,14 +157,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #3CB371;
+    color: #22c55e;
 }
 
 .mobile-nav-menu {
     display: flex;
     flex-direction: column;
-    background-color: #f7fef7;
-    border-top: 1px solid #f0f0f0;
+    background: #f7fef7;
+    border-top: 1px solid #d1fae5;
     padding: 0.5rem;
 }
 
@@ -164,41 +173,46 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem 1.5rem;
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid transparent;
+    border-radius: 12px;
     text-align: left;
     font-size: 1rem;
-    color: #333;
+    color: #166534;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
     margin: 2px;
-    border-radius: 1rem;
 }
 
 .mobile-nav-menu button:hover {
-    background-color: #e8fede;
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.2);
 }
 
 .mobile-nav-menu button.active {
-    background-color: #d7fec8;
-    color: #333;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(34, 197, 94, 0.08) 100%);
+    border-color: #22c55e;
+    color: #166534;
     font-weight: 700;
 }
 
 .mobile-nav-menu button svg {
-    color: #333;
+    color: inherit;
     min-width: 20px;
 }
 
 .mobile-logout-btn {
     margin: 0.5rem;
-    background-color: #e8fede !important;
-    border-radius: 1rem !important;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, rgba(220, 38, 38, 0.04) 100%) !important;
+    border: 1px solid rgba(220, 38, 38, 0.2) !important;
+    color: #dc2626 !important;
+    border-radius: 12px !important;
     font-weight: 600 !important;
 }
 
 .mobile-logout-btn:hover {
-    background-color: #d7fec8 !important;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.12) 0%, rgba(220, 38, 38, 0.06) 100%) !important;
+    border-color: #dc2626 !important;
 }
 
 .mobile-overlay {

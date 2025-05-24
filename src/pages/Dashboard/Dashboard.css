@@ -10,7 +10,7 @@
     height: 100vh;
     overflow-y: auto;
     flex: 1;
-    background: transparent;
+    background: white;
     transition: margin-left 0.3s ease, padding-top 0.3s ease;
     margin-left: 250px;
 }

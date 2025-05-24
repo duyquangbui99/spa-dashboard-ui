@@ -8,6 +8,7 @@ const Login = () => {
     const [name, setName] = useState('');
     const [pin, setPin] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const location = useLocation(); // ⬅️ Get previous location
     const { login } = useAuth();
@@ -15,6 +16,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         try {
             const res = await axios.post('/api/auth/login', { name, pin });
@@ -25,18 +27,19 @@ const Login = () => {
             navigate(redirectPath, { replace: true });
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-
         <div className="login-page">
             <div className="login-background"></div>
 
             <div className="login-card">
                 <div className="login-header">
-                    <h1>Management Project</h1>
-                    <p>Quang Bui</p>
+                    <h1>Quang Bui</h1>
+                    <p>Staff Management Portal</p>
                 </div>
                 <div className="login-form-container">
                     <form onSubmit={handleSubmit} className="login-form">
@@ -45,10 +48,11 @@ const Login = () => {
                                 <i className="user-icon"></i>
                                 <input
                                     type="text"
-                                    placeholder="Username"
+                                    placeholder="Enter your username"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     required
+                                    disabled={loading}
                                 />
                             </div>
                         </div>
@@ -58,26 +62,30 @@ const Login = () => {
                                 <i className="password-icon"></i>
                                 <input
                                     type="password"
-                                    placeholder="PIN"
+                                    placeholder="Enter your PIN"
                                     value={pin}
                                     onChange={(e) => setPin(e.target.value)}
                                     required
+                                    disabled={loading}
                                 />
                             </div>
                         </div>
 
-                        <button type="submit" className="login-button">
-                            LOGIN
+                        <button
+                            type="submit"
+                            className="login-button"
+                            disabled={loading}
+                        >
+                            {loading ? 'Signing In...' : 'Sign In'}
                         </button>
                     </form>
 
                     {error && <div className="error-message">{error}</div>}
-
                 </div>
             </div>
 
             <div className="login-footer">
-                <p>Tranquility Nails & Spa Staff Portal</p>
+                <p>© 2025 Quang Management Project - Secure Staff Access</p>
             </div>
         </div>
     );
