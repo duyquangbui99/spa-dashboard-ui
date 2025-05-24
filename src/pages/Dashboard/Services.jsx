@@ -138,6 +138,8 @@ const Services = () => {
                         <h2>All Services</h2>
                         {role === 'admin' && <button onClick={() => { setFormData({ name: '', price: '', duration: '', description: '', categoryId: '' }); setEditingId(null); setIsModalOpen(true); }}>Add Service</button>}
                     </div>
+
+                    {/* Desktop Table View */}
                     <table className="service-table">
                         <thead>
                             <tr>
@@ -165,6 +167,43 @@ const Services = () => {
                             ))}
                         </tbody>
                     </table>
+
+                    {/* Mobile Card View */}
+                    <div className="mobile-service-cards">
+                        {services.map(service => (
+                            <div key={service._id} className="service-card">
+                                <div className="service-card-header">
+                                    <h3 className="service-card-title">{service.name}</h3>
+                                </div>
+                                <div className="service-card-body">
+                                    <div className="service-card-row">
+                                        <span className="service-card-label">Price</span>
+                                        <span className="service-card-value">${service.price}</span>
+                                    </div>
+                                    <div className="service-card-row">
+                                        <span className="service-card-label">Duration</span>
+                                        <span className="service-card-value">{service.duration} min</span>
+                                    </div>
+                                    <div className="service-card-row">
+                                        <span className="service-card-label">Category</span>
+                                        <span className="service-card-value">{categories.find(c => c._id === service.categoryId)?.name || 'N/A'}</span>
+                                    </div>
+                                    {service.description && (
+                                        <div className="service-card-row">
+                                            <span className="service-card-label">Description</span>
+                                            <span className="service-card-value">{service.description}</span>
+                                        </div>
+                                    )}
+                                    {role === 'admin' && (
+                                        <div className="service-card-actions">
+                                            <button onClick={() => handleEdit(service)}>Edit</button>
+                                            <button onClick={() => handleDelete(service._id)}>Delete</button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
 
