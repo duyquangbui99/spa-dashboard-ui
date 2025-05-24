@@ -84,6 +84,7 @@ const Home = () => {
 
                     {/* Desktop Navigation */}
                     <nav className="nav-desktop">
+                        {/* Navigation items can be added here in the future */}
                     </nav>
 
                     <button
@@ -92,7 +93,7 @@ const Home = () => {
                         type="button"
                         disabled={!allowBooking}
                     >
-                        {allowBooking ? 'Book Now' : 'Booking Disabled'}
+                        {allowBooking ? 'Book Now' : '⏸ Booking Disabled'}
                     </button>
                 </div>
             </header>
@@ -101,7 +102,7 @@ const Home = () => {
             <div className="mobile-menu">
                 <div className="p-4">
                     <div className="flex justify-between items-center mb-8">
-                        <div className="text-xl font-bold">Quang Management Project</div>
+                        <div className="text-xl font-bold">Tranquility Spa Management</div>
                         <button className="text-gray-500 focus:outline-none">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -116,15 +117,20 @@ const Home = () => {
                 <div className="container">
                     <div className="hero-content">
                         <div className="hero-text animate-fade-in">
-                            <h1 className="hero-title">Streamline Your Business with Smart Booking Management</h1>
-                            <p className="hero-description">Take control of your appointments with our intuitive booking system. Manage schedules, track customer preferences, and grow your business with powerful analytics, automated reminders, social media integration, and seamless customer communication tools.</p>
+                            <h1 className="hero-title">Transform Your Experience with Smart Management</h1>
+                            <p className="hero-description">
+                                Elevate your business with our comprehensive management platform.
+                                Streamline appointments, enhance customer relationships, and unlock powerful
+                                insights with automated scheduling, social media integration, and advanced analytics
+                                designed specifically for wellness professionals.
+                            </p>
                             <div className="hero-buttons">
                                 {!allowBooking && (
                                     <div className="booking-notification">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="notification-icon" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                                         </svg>
-                                        <span>We are currently busy and can't take any more appointments for today. Please walk in or try again tomorrow.</span>
+                                        <span>We're currently at capacity and unable to accept new appointments today. Please visit us directly or try again tomorrow for the best service experience.</span>
                                     </div>
                                 )}
                                 <button
@@ -133,13 +139,15 @@ const Home = () => {
                                     type="button"
                                     disabled={!allowBooking}
                                 >
-                                    {allowBooking ? 'Book Appointment' : 'Booking Disabled'}
+                                    {allowBooking ? '🌟 Book Your Appointment' : '⏸ Booking Currently Disabled'}
                                 </button>
-                                <Link to="/dashboard" className="btn-secondary">Dashboard</Link>
+                                <Link to="/dashboard" className="btn-secondary">
+                                    📊 Access Dashboard
+                                </Link>
                             </div>
                         </div>
                         <div className="hero-image animate-slide-up">
-                            <img src={bookingDashboard} alt="Booking Dashboard" />
+                            <img src={bookingDashboard} alt="Modern Spa Management Dashboard - Streamline your appointments and enhance customer experience" />
                         </div>
                     </div>
                 </div>

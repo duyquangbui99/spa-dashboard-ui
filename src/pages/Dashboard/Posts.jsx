@@ -66,15 +66,24 @@ const Posts = () => {
 
     return (
         <div className="posts-container">
-            <h2>Create Social Media Post</h2>
+            <div className="posts-header">
+                <h2>Social Media Manager</h2>
+                <p className="posts-subtitle">Create engaging posts with AI-powered captions</p>
+            </div>
 
             <div className="posts-content">
                 <div className="posts-left-section">
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                    />
+                    <div className="posts-upload-section">
+                        <div className="upload-icon">📸</div>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                        />
+                        <div className="upload-instructions">
+                            Select an image to get started with your social media post
+                        </div>
+                    </div>
 
                     {previewUrl && (
                         <div className="image-preview">
@@ -84,41 +93,43 @@ const Posts = () => {
                 </div>
 
                 <div className="posts-right-section">
-                    <button
-                        onClick={generateCaption}
-                        disabled={captionLoading || !imageFile}
-                        className={captionLoading ? 'loading' : ''}
-                    >
-                        <span className="button-content">
-                            {captionLoading && <span className="loading-spinner" />}
-                            Generate Caption with AI
-                        </span>
-                    </button>
+                    <div className="action-section">
+                        <button
+                            onClick={generateCaption}
+                            disabled={captionLoading || !imageFile}
+                            className={`generate-caption-btn ${captionLoading ? 'loading' : ''}`}
+                        >
+                            <span className="button-content">
+                                {captionLoading && <span className="loading-spinner" />}
+                                ✨ Generate Caption with AI
+                            </span>
+                        </button>
 
-                    {captionLoading ? (
-                        <div className="caption-loading" />
-                    ) : (
-                        <textarea
-                            placeholder="Write your own caption or use AI to generate"
-                            value={caption}
-                            onChange={(e) => setCaption(e.target.value)}
-                            rows={3}
-                        />
-                    )}
+                        {captionLoading ? (
+                            <div className="caption-loading" />
+                        ) : (
+                            <textarea
+                                placeholder="Write your own caption or use AI to generate one..."
+                                value={caption}
+                                onChange={(e) => setCaption(e.target.value)}
+                                rows={3}
+                            />
+                        )}
 
-                    <button
-                        onClick={handlePost}
-                        disabled={loading || !imageFile || !caption}
-                        className={loading ? 'loading' : ''}
-                    >
-                        <span className="button-content">
-                            {loading && <span className="loading-spinner" />}
-                            Post to Facebook
-                        </span>
-                    </button>
+                        <button
+                            onClick={handlePost}
+                            disabled={loading || !imageFile || !caption}
+                            className={`post-btn ${loading ? 'loading' : ''}`}
+                        >
+                            <span className="button-content">
+                                {loading && <span className="loading-spinner" />}
+                                🚀 Post to Facebook
+                            </span>
+                        </button>
 
-                    {successMessage && <p className="success">{successMessage}</p>}
-                    {error && <p className="error">{error}</p>}
+                        {successMessage && <p className="success">{successMessage}</p>}
+                        {error && <p className="error">{error}</p>}
+                    </div>
                 </div>
             </div>
         </div>
