@@ -121,34 +121,56 @@ const Dashboard = () => {
         fetchDashboardData();
     }, [role, workerId]);
 
-    if (loading) return <div className="dashboard-loading">Loading...</div>;
+    if (loading) return <div className="dashboard-loading">Loading dashboard data...</div>;
     if (error) return <div className="dashboard-error">{error}</div>;
+
+    const getWelcomeMessage = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning";
+        if (hour < 18) return "Good Afternoon";
+        return "Good Evening";
+    };
+
+    const formatRole = (role) => {
+        return role?.charAt(0).toUpperCase() + role?.slice(1) || 'Staff Member';
+    };
 
     return (
         <>
             <div className="dashboard-header">
-                <h2>Welcome, {name || 'User'}!</h2>
-                <p className="user-role">Role: {role || 'N/A'}</p>
+                <h2>{getWelcomeMessage()}, {name || 'User'}! 👋</h2>
+                <p className="user-role">
+                    {formatRole(role)} • {new Date().toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })}
+                </p>
             </div>
 
             <div className="dashboard-content">
                 <div className="dashboard-card">
-                    <h3>Today's Overview</h3>
+                    <h3>📊 Today's Overview</h3>
                     <div className="dashboard-stats">
                         <div className="stat-item">
                             <span className="stat-value">{todayStats.appointments}</span>
-                            <span className="stat-label">Today's Appointments</span>
+                            <span className="stat-label">Appointments Today</span>
                         </div>
                         <div className="stat-item">
                             <span className="stat-value">{todayStats.staffOff.length}</span>
                             <span className="stat-label">Staff Off Today</span>
+                        </div>
+                        <div className="stat-item">
+                            <span className="stat-value">{todayStats.upcomingAppointments.length}</span>
+                            <span className="stat-label">Upcoming Today</span>
                         </div>
                     </div>
                 </div>
 
                 {todayStats.staffOff.length > 0 && (
                     <div className="dashboard-card">
-                        <h3>Staff Off Today</h3>
+                        <h3>🏠 Staff Off Today</h3>
                         <div className="staff-off-list">
                             {todayStats.staffOff.map(staff => (
                                 <div key={staff._id} className="staff-off-item">
@@ -156,14 +178,21 @@ const Dashboard = () => {
                                 </div>
                             ))}
                         </div>
+                        {todayStats.staffOff.length === 0 && (
+                            <div className="no-appointments">All staff members are working today! 🎉</div>
+                        )}
                     </div>
                 )}
 
                 <div className="dashboard-card">
-                    <h3>Upcoming Appointments</h3>
+                    <h3>⏰ Upcoming Appointments</h3>
                     <div className="upcoming-appointments">
                         {todayStats.upcomingAppointments.length === 0 ? (
-                            <div className="no-appointments">No upcoming appointments for today.</div>
+                            <div className="no-appointments">
+                                No upcoming appointments for today.
+                                <br />
+                                <small>Enjoy the peaceful moment! ✨</small>
+                            </div>
                         ) : (
                             todayStats.upcomingAppointments.map(appointment => (
                                 <div key={appointment._id} className="appointment-item">
@@ -171,9 +200,11 @@ const Dashboard = () => {
                                         {appointment.localTime}
                                     </div>
                                     <div className="appointment-details">
-                                        <span className="customer-name">{appointment.customerName}</span>
+                                        <span className="customer-name">
+                                            👤 {appointment.customerName}
+                                        </span>
                                         <span className="service-name">
-                                            {appointment.serviceIds?.[0]?.name || 'Service'}
+                                            ✂️ {appointment.serviceIds?.[0]?.name || 'Service'}
                                         </span>
                                     </div>
                                 </div>
