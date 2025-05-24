@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from '../../utils/axiosInstance';
 import './Staff.css';
 
 const StaffForm = ({ formData, handleChange, handleSubmit, services, editingId, error, onCancel }) => {
     const [searchService, setSearchService] = useState('');
+    const [categories, setCategories] = useState([]);
+    const [expandedCategories, setExpandedCategories] = useState(new Set());
 
     const DAYS_OF_WEEK = [
         'Monday',
@@ -14,14 +17,76 @@ const StaffForm = ({ formData, handleChange, handleSubmit, services, editingId, 
         'Sunday'
     ];
 
-    const filteredServices = services.filter(service =>
-        service.name.toLowerCase().includes(searchService.toLowerCase())
-    );
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const res = await axios.get('/api/service-categories');
+            setCategories(res.data);
+            // Expand all categories by default
+            setExpandedCategories(new Set(res.data.map(cat => cat._id)));
+        } catch (err) {
+            console.error('Error fetching categories:', err);
+        }
+    };
+
+    const getServicesByCategory = () => {
+        const servicesByCategory = {};
+
+        categories.forEach(category => {
+            const categoryServices = services.filter(service =>
+                service.categoryId === category._id &&
+                service.name.toLowerCase().includes(searchService.toLowerCase())
+            );
+            if (categoryServices.length > 0) {
+                servicesByCategory[category._id] = {
+                    category,
+                    services: categoryServices
+                };
+            }
+        });
+
+        return servicesByCategory;
+    };
+
+    const toggleCategory = (categoryId) => {
+        const newExpanded = new Set(expandedCategories);
+        if (newExpanded.has(categoryId)) {
+            newExpanded.delete(categoryId);
+        } else {
+            newExpanded.add(categoryId);
+        }
+        setExpandedCategories(newExpanded);
+    };
 
     const handleServiceChange = (serviceId) => {
         const updatedServices = formData.services.includes(serviceId)
             ? formData.services.filter(id => id !== serviceId)
             : [...formData.services, serviceId];
+
+        handleChange({
+            target: {
+                name: 'services',
+                value: updatedServices
+            }
+        });
+    };
+
+    const handleCategorySelectAll = (categoryServices) => {
+        const categoryServiceIds = categoryServices.map(service => service._id);
+        const allSelected = categoryServiceIds.every(id => formData.services.includes(id));
+
+        let updatedServices;
+        if (allSelected) {
+            // Remove all category services
+            updatedServices = formData.services.filter(id => !categoryServiceIds.includes(id));
+        } else {
+            // Add all category services
+            const newServices = categoryServiceIds.filter(id => !formData.services.includes(id));
+            updatedServices = [...formData.services, ...newServices];
+        }
 
         handleChange({
             target: {
@@ -43,6 +108,8 @@ const StaffForm = ({ formData, handleChange, handleSubmit, services, editingId, 
             }
         });
     };
+
+    const servicesByCategory = getServicesByCategory();
 
     return (
         <div className="form-overlay">
@@ -75,7 +142,7 @@ const StaffForm = ({ formData, handleChange, handleSubmit, services, editingId, 
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="services">Services</label>
+                        <label htmlFor="services">Services by Category</label>
                         <input
                             type="text"
                             placeholder="Search services..."
@@ -83,19 +150,63 @@ const StaffForm = ({ formData, handleChange, handleSubmit, services, editingId, 
                             onChange={(e) => setSearchService(e.target.value)}
                             className="service-search"
                         />
-                        <div className="staff-services-selection">
-                            {filteredServices.map(service => (
-                                <div key={service._id} className="service-option">
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={formData.services.includes(service._id)}
-                                            onChange={() => handleServiceChange(service._id)}
-                                        />
-                                        <span>{service.name}</span>
-                                    </label>
-                                </div>
-                            ))}
+                        <div className="services-by-category">
+                            {Object.keys(servicesByCategory).length === 0 ? (
+                                <div className="no-services-found">No services found</div>
+                            ) : (
+                                Object.values(servicesByCategory).map(({ category, services: categoryServices }) => {
+                                    const isExpanded = expandedCategories.has(category._id);
+                                    const allSelected = categoryServices.every(service =>
+                                        formData.services.includes(service._id)
+                                    );
+                                    const someSelected = categoryServices.some(service =>
+                                        formData.services.includes(service._id)
+                                    );
+
+                                    return (
+                                        <div key={category._id} className="category-section">
+                                            <div className="category-header">
+                                                <button
+                                                    type="button"
+                                                    className={`category-toggle ${isExpanded ? 'expanded' : ''}`}
+                                                    onClick={() => toggleCategory(category._id)}
+                                                >
+                                                    <div className="category-name-section">
+                                                        <span className="category-name">{category.name}</span>
+                                                    </div>
+                                                    <span className="toggle-icon">
+                                                        {isExpanded ? '−' : '+'}
+                                                    </span>
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className={`select-all-btn ${allSelected ? 'all-selected' : someSelected ? 'some-selected' : ''}`}
+                                                    onClick={() => handleCategorySelectAll(categoryServices)}
+                                                >
+                                                    {allSelected ? 'Deselect All' : 'Select All'}
+                                                </button>
+                                            </div>
+
+                                            {isExpanded && (
+                                                <div className="category-services">
+                                                    {categoryServices.map(service => (
+                                                        <div key={service._id} className="service-option">
+                                                            <label className="checkbox-label">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={formData.services.includes(service._id)}
+                                                                    onChange={() => handleServiceChange(service._id)}
+                                                                />
+                                                                <span className="service-name">{service.name}</span>
+                                                            </label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })
+                            )}
                         </div>
                     </div>
 

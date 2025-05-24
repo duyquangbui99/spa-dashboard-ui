@@ -146,9 +146,201 @@
 
 /* Services Selection */
 .service-search {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
 }
 
+.services-by-category {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 2px solid var(--color-sidebar-hover);
+    border-radius: 12px;
+    background-color: white;
+    padding: 0;
+}
+
+.services-by-category::-webkit-scrollbar {
+    width: 6px;
+}
+
+.services-by-category::-webkit-scrollbar-track {
+    background: var(--color-sidebar-bg);
+    border-radius: 3px;
+}
+
+.services-by-category::-webkit-scrollbar-thumb {
+    background: var(--color-accent);
+    border-radius: 3px;
+}
+
+.no-services-found {
+    padding: 20px;
+    text-align: center;
+    color: var(--color-muted-text);
+    font-style: italic;
+}
+
+.category-section {
+    border-bottom: 1px solid var(--color-sidebar-hover);
+}
+
+.category-section:last-child {
+    border-bottom: none;
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border-bottom: 1px solid var(--color-sidebar-hover);
+    padding: 0;
+}
+
+.category-toggle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: 700;
+    color: var(--color-primary-text);
+    font-size: 1.1rem;
+}
+
+
+
+.category-name-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.toggle-icon {
+    font-size: 1rem;
+    width: 20px;
+    display: inline-block;
+    transition: transform 0.2s ease;
+    font-weight: bold;
+}
+
+.category-toggle.expanded .toggle-icon {
+    transform: rotate(0deg);
+}
+
+.category-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.service-count {
+    font-size: 0.9rem;
+    color: var(--color-muted-text);
+    font-weight: normal;
+}
+
+.select-all-btn {
+    padding: 8px 16px;
+    margin: 12px 16px;
+    border: 2px solid var(--color-sidebar-hover);
+    background: white;
+    color: var(--color-primary-text);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.select-all-btn:hover {
+    background: var(--color-sidebar-bg);
+    transform: translateY(-1px);
+}
+
+.select-all-btn.all-selected {
+    background: var(--color-accent);
+    color: white;
+    border-color: var(--color-accent);
+}
+
+.select-all-btn.some-selected {
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+    color: white;
+    border-color: var(--color-accent);
+}
+
+.category-services {
+    padding: 16px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.service-option {
+    background: var(--color-sidebar-bg);
+    border: 1px solid var(--color-sidebar-hover);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: all 0.2s ease;
+    margin-bottom: 0;
+}
+
+.service-option:hover {
+    background-color: var(--color-sidebar-hover);
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.checkbox-label {
+    display: flex !important;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--color-primary-text);
+    gap: 12px;
+    margin-bottom: 0 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    font-size: 1rem !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 0;
+    accent-color: var(--color-accent);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.service-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.service-name {
+    font-weight: 600;
+    color: var(--color-primary-text);
+    line-height: 1.3;
+}
+
+.service-price {
+    font-size: 0.8rem;
+    color: var(--color-muted-text);
+    font-weight: normal;
+}
+
+/* Legacy support for old service selection */
 .staff-services-selection {
     max-height: 200px;
     overflow-y: auto;
@@ -170,33 +362,6 @@
 .staff-services-selection::-webkit-scrollbar-thumb {
     background: var(--color-accent);
     border-radius: 3px;
-}
-
-.service-option {
-    padding: 10px 12px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    margin-bottom: 4px;
-}
-
-.service-option:hover {
-    background-color: var(--color-sidebar-bg);
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--color-primary-text);
-}
-
-.checkbox-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin-right: 12px;
-    accent-color: var(--color-accent);
-    cursor: pointer;
 }
 
 /* Table Section */

@@ -17,7 +17,7 @@ const Staffs = () => {
         phone: '',
         services: [],
         workingDays: [],
-        workingHours: { start: '09:00', end: '17:00' },
+        workingHours: { start: '09:30', end: '19:30' },
         pin: ''
     });
 
@@ -104,7 +104,7 @@ const Staffs = () => {
             phone: '',
             services: [],
             workingDays: [],
-            workingHours: { start: '09:00', end: '17:00' },
+            workingHours: { start: '09:30', end: '19:30' },
             pin: ''
         });
         setEditingId(null);
