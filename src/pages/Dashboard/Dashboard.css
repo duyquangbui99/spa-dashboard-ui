@@ -7,13 +7,6 @@
 }
 
 
-
-/* Mobile responsive adjustments */
-.main-content.mobile-view {
-    margin-left: 0;
-    padding-top: 50px;
-}
-
 /* Dashboard Layout */
 .dashboard-content {
     display: grid;
