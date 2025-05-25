@@ -6,14 +6,7 @@
     background: var(--color-background);
 }
 
-.main-content {
-    height: 100vh;
-    overflow-y: auto;
-    flex: 1;
-    background: white;
-    transition: margin-left 0.3s ease, padding-top 0.3s ease;
-    margin-left: 250px;
-}
+
 
 /* Mobile responsive adjustments */
 .main-content.mobile-view {

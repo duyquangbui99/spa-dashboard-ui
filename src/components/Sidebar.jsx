@@ -1,24 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Home, Calendar, Award, Users, LogOut, Menu, X, Newspaper } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Sidebar.css';
 
 const Sidebar = () => {
-    const [activeItem, setActiveItem] = useState('Dashboard');
-    const [isMobileView, setIsMobileView] = useState(false);
-    const [mobileNavOpen, setMobileNavOpen] = useState(false);
+    const location = useLocation();
     const navigate = useNavigate();
     const { logout } = useAuth();
 
     // Icons for menu items
-    const menuItems = [
+    const menuItems = useMemo(() => [
         { name: 'Dashboard', icon: <Home size={20} />, path: '/dashboard' },
         { name: 'Bookings', icon: <Calendar size={20} />, path: '/dashboard/bookings' },
         { name: 'Services', icon: <Award size={20} />, path: '/dashboard/services' },
         { name: 'Staffs', icon: <Users size={20} />, path: '/dashboard/staffs' },
         { name: 'Posts', icon: <Newspaper size={20} />, path: '/dashboard/posts' },
-    ];
+    ], []);
+
+    // Function to determine active item based on current path
+    const getActiveItemFromPath = useCallback((pathname) => {
+        const currentItem = menuItems.find(item => item.path === pathname);
+        return currentItem ? currentItem.name : 'Dashboard';
+    }, [menuItems]);
+
+    const [activeItem, setActiveItem] = useState(() => getActiveItemFromPath(location.pathname));
+    const [isMobileView, setIsMobileView] = useState(false);
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+    // Update active item when location changes
+    useEffect(() => {
+        setActiveItem(getActiveItemFromPath(location.pathname));
+    }, [location.pathname, getActiveItemFromPath]);
 
     // Check if window is in mobile view on mount and when resized
     useEffect(() => {

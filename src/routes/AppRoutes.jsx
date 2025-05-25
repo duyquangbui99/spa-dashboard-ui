@@ -17,7 +17,12 @@ const ProtectedRoute = ({ children }) => {
     const { isLoggedIn, loading } = useAuth();
     const location = useLocation();
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return (
+        <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p className="loading-text">Loading...</p>
+        </div>
+    );
 
     if (!isLoggedIn) {
         return <Navigate to="/login" replace state={{ from: location }} />;
@@ -28,9 +33,19 @@ const ProtectedRoute = ({ children }) => {
 
 export default function AppRoutes() {
     const { loading } = useAuth();
-    if (loading) return <div>Loading...</div>;
+    if (loading) return (
+        <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p className="loading-text">Loading...</p>
+        </div>
+    );
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p className="loading-text">Loading...</p>
+            </div>
+        }>
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
