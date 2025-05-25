@@ -1,4 +1,4 @@
-.modal-overlay {
+.timeslot-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -40,7 +40,7 @@
     color: var(--color-primary-text);
 }
 
-.close-button {
+.timeslot-close-button {
     background: none;
     border: none;
     font-size: 1.5rem;
@@ -51,21 +51,21 @@
     transition: color 0.2s;
 }
 
-.close-button:hover {
+.timeslot-close-button:hover {
     color: var(--color-primary-text);
 }
 
-.modal-body {
+.timeslot-modal-body {
     padding: 1rem;
 }
 
-.bookings-list {
+.timeslot-bookings-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.booking-item {
+.timeslot-booking-item {
     display: flex;
     gap: 1rem;
     padding: 1rem;
@@ -75,60 +75,60 @@
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.booking-item:hover {
+.timeslot-booking-item:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
-.booking-time {
+.timeslot-booking-time {
     font-weight: 600;
     color: var(--color-primary-text);
     min-width: 80px;
     padding: 0.25rem 0;
 }
 
-.booking-details {
+.timeslot-booking-details {
     flex: 1;
 }
 
-.booking-customer {
+.timeslot-booking-customer {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     margin-bottom: 0.5rem;
 }
 
-.customer-name {
+.timeslot-customer-name {
     font-weight: 500;
     color: var(--color-primary-text);
 }
 
-.customer-phone {
+.timeslot-customer-phone {
     color: var(--color-muted-text);
     font-size: 0.9rem;
 }
 
-.booking-service {
+.timeslot-booking-service {
     color: var(--color-primary-text);
     font-size: 0.95rem;
     margin-bottom: 0.5rem;
     padding: 0.25rem 0;
 }
 
-.booking-worker {
+.timeslot-booking-worker {
     color: var(--color-muted-text);
     font-size: 0.9rem;
     font-style: italic;
     margin-bottom: 0.5rem;
 }
 
-.booking-actions {
+.timeslot-booking-actions {
     display: flex;
     gap: 8px;
     margin-top: 8px;
 }
 
-.icon-button {
+.timeslot-icon-button {
     padding: 8px;
     border: none;
     border-radius: 6px;
@@ -141,25 +141,25 @@
     border: 1px solid var(--color-button-border);
 }
 
-.icon-button:hover {
+.timeslot-icon-button:hover {
     transform: translateY(-1px);
 }
 
-.edit-button {
+.timeslot-edit-button {
     color: var(--color-link);
 }
 
-.edit-button:hover {
+.timeslot-edit-button:hover {
     background-color: var(--color-link);
     color: white;
     border-color: var(--color-link);
 }
 
-.delete-button {
+.timeslot-delete-button {
     color: var(--color-alert);
 }
 
-.delete-button:hover {
+.timeslot-delete-button:hover {
     background-color: var(--color-alert);
     color: white;
     border-color: var(--color-alert);
@@ -172,18 +172,18 @@
         margin: 10vh 0 0 0;
     }
 
-    .close-button {
+    .timeslot-close-button {
         top: 16px;
         right: 16px;
         z-index: 1002;
     }
 
-    .booking-item {
+    .timeslot-booking-item {
         flex-direction: column;
         gap: 0.5rem;
     }
 
-    .booking-time {
+    .timeslot-booking-time {
         min-width: auto;
     }
 }

@@ -36,34 +36,34 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBo
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
+        <div className="timeslot-modal-overlay" onClick={onClose}>
             <div className="timeslot-modal-content" onClick={e => e.stopPropagation()}>
                 <div className="timeslot-modal-header">
                     <h2>Bookings for {formatTime(bookings[0]?.startTime)}</h2>
-                    <button className="close-button" onClick={onClose}>×</button>
+                    <button className="timeslot-close-button" onClick={onClose}>×</button>
                 </div>
-                <div className="modal-body">
+                <div className="timeslot-modal-body">
                     {bookings.length === 0 ? (
                         <p>No bookings for this time slot</p>
                     ) : (
-                        <div className="bookings-list">
+                        <div className="timeslot-bookings-list">
                             {bookings.map(booking => (
                                 <div
                                     key={booking._id}
-                                    className="booking-item"
+                                    className="timeslot-booking-item"
                                     style={{ borderLeft: `4px solid ${getServiceColor(booking)}` }}
                                 >
-                                    <div className="booking-time">
+                                    <div className="timeslot-booking-time">
                                         {formatTime(booking.startTime)}
                                     </div>
-                                    <div className="booking-details">
-                                        <div className="booking-customer">
-                                            <span className="customer-name">{booking.customerName}</span>
+                                    <div className="timeslot-booking-details">
+                                        <div className="timeslot-booking-customer">
+                                            <span className="timeslot-customer-name">{booking.customerName}</span>
                                             {booking.customerPhone && (
-                                                <span className="customer-phone">{booking.customerPhone}</span>
+                                                <span className="timeslot-customer-phone">{booking.customerPhone}</span>
                                             )}
                                         </div>
-                                        <div className="booking-service">
+                                        <div className="timeslot-booking-service">
                                             {booking.serviceIds
                                                 ? booking.serviceIds.map(s => s.name).join(', ')
                                                 : booking.services.map(s => {
@@ -77,20 +77,20 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBo
                                                 }).join(', ')}
                                         </div>
                                         {booking.workerId && (
-                                            <div className="booking-worker">
+                                            <div className="timeslot-booking-worker">
                                                 Staff: {booking.workerId.name}
                                             </div>
                                         )}
-                                        <div className="booking-actions">
+                                        <div className="timeslot-booking-actions">
                                             <button
-                                                className="icon-button edit-button"
+                                                className="timeslot-icon-button timeslot-edit-button"
                                                 onClick={() => handleEdit(booking)}
                                                 title="Edit booking"
                                             >
                                                 <Pencil size={16} />
                                             </button>
                                             <button
-                                                className="icon-button delete-button"
+                                                className="timeslot-icon-button timeslot-delete-button"
                                                 onClick={() => handleDelete(booking._id)}
                                                 title="Delete booking"
                                             >

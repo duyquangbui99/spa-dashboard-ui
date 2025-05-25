@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../../utils/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
-import StaffForm from '../../components/Staff/StaffForm';
-import StaffTable from '../../components/Staff/StaffTable';
-import '../../components/Staff/Staff.css';
+import StaffForm from '../Dashboard/Staff/StaffForm';
+import StaffTable from '../Dashboard/Staff/StaffTable';
+import '../Dashboard/Staff/Staff.css';
 
 const Staffs = () => {
     const { role } = useAuth();
