@@ -355,8 +355,15 @@ const Bookings = () => {
         }
     };
 
-    // Add function to handle allow booking toggle
-    const handleAllowBookingToggle = async (e) => {
+    // Add dedicated click handler for mobile compatibility
+    const handleToggleClick = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Debounce to prevent multiple rapid calls
+        if (e.target.disabled) return;
+        e.target.disabled = true;
+
         try {
             const newValue = !allowBooking;
             await axios.put('/api/setting/allowbooking', { allowBooking: newValue });
@@ -365,6 +372,11 @@ const Bookings = () => {
             window.dispatchEvent(new CustomEvent('allowBookingChanged', { detail: { allowBooking: newValue } }));
         } catch (err) {
             console.error('Failed to update allow booking setting:', err);
+        } finally {
+            // Re-enable after a short delay
+            setTimeout(() => {
+                if (e.target) e.target.disabled = false;
+            }, 300);
         }
     };
 
@@ -510,16 +522,19 @@ const Bookings = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="allow-booking-toggle">
+                        <div className="allow-booking-toggle" onClick={handleToggleClick}>
                             <label className="toggle-switch">
                                 <input
                                     type="checkbox"
                                     checked={allowBooking}
-                                    onChange={handleAllowBookingToggle}
+                                    onChange={() => { }} // Controlled by parent click
+                                    readOnly
                                 />
                                 <span className="toggle-slider"></span>
                             </label>
-                            <span className="toggle-label">Allow Bookings</span>
+                            <span className="toggle-label">
+                                Allow Bookings
+                            </span>
                         </div>
                         <button
                             className="add-booking-btn"
