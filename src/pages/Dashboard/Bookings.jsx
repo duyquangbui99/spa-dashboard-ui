@@ -357,27 +357,29 @@ const Bookings = () => {
 
     // Add dedicated click handler for mobile compatibility
     const handleToggleClick = async (e) => {
+        console.log('Toggle clicked - Event type:', e.type, 'Allow booking current state:', allowBooking);
         e.preventDefault();
         e.stopPropagation();
 
-        // Debounce to prevent multiple rapid calls
-        if (e.target.disabled) return;
-        e.target.disabled = true;
-
         try {
             const newValue = !allowBooking;
+            console.log('Attempting to set allow booking to:', newValue);
             await axios.put('/api/setting/allowbooking', { allowBooking: newValue });
             setAllowBooking(newValue);
+            console.log('Successfully updated allow booking to:', newValue);
             // Broadcast the change to other components
             window.dispatchEvent(new CustomEvent('allowBookingChanged', { detail: { allowBooking: newValue } }));
         } catch (err) {
             console.error('Failed to update allow booking setting:', err);
-        } finally {
-            // Re-enable after a short delay
-            setTimeout(() => {
-                if (e.target) e.target.disabled = false;
-            }, 300);
         }
+    };
+
+    // Add touch handler for mobile devices
+    const handleToggleTouch = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // For touch devices, we'll rely on the click event
+        // This prevents double-firing on mobile
     };
 
     // Add new useEffect for fetching allow booking setting
@@ -522,16 +524,23 @@ const Bookings = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="allow-booking-toggle" onClick={handleToggleClick}>
-                            <label className="toggle-switch">
+                        <div
+                            className="allow-booking-toggle"
+                            onClick={handleToggleClick}
+                            onTouchStart={handleToggleTouch}
+                            role="button"
+                            tabIndex={0}
+                            data-checked={allowBooking}
+                        >
+                            <div className="toggle-switch">
                                 <input
                                     type="checkbox"
                                     checked={allowBooking}
-                                    onChange={() => { }} // Controlled by parent click
                                     readOnly
+                                    style={{ display: 'none' }}
                                 />
                                 <span className="toggle-slider"></span>
-                            </label>
+                            </div>
                             <span className="toggle-label">
                                 Allow Bookings
                             </span>
