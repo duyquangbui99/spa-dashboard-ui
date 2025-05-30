@@ -101,11 +101,11 @@
     font-size: 1.3rem;
 }
 
-.form-group {
+.staff-form .form-group {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.staff-form .form-group label {
     display: block;
     margin-bottom: 8px;
     color: var(--color-primary-text);
@@ -115,9 +115,9 @@
     letter-spacing: 0.5px;
 }
 
-.form-group input,
-.form-group select,
-.search-input {
+.staff-form .form-group input,
+.staff-form .form-group select,
+.staff-container .search-input {
     width: 100%;
     padding: 14px 16px;
     border: 2px solid var(--color-sidebar-hover);
@@ -129,23 +129,23 @@
     font-weight: 500;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.search-input:focus {
+.staff-form .form-group input:focus,
+.staff-form .form-group select:focus,
+.staff-container .search-input:focus {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 4px rgba(111, 221, 139, 0.1);
     transform: translateY(-1px);
 }
 
-.form-row {
+.staff-form .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
 
 /* Services Selection */
-.service-search {
+.staff-form .service-search {
     margin-bottom: 16px;
 }
 
@@ -211,8 +211,6 @@
     color: var(--color-primary-text);
     font-size: 1.1rem;
 }
-
-
 
 .category-name-section {
     display: flex;
