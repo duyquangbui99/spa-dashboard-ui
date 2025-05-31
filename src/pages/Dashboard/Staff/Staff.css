@@ -387,7 +387,7 @@
 }
 
 .search-input {
-    padding-left: 44px;
+    padding-left: 44px !important;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236c6c6c'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: 14px center;
