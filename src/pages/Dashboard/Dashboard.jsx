@@ -121,7 +121,12 @@ const Dashboard = () => {
         fetchDashboardData();
     }, [role, workerId]);
 
-    if (loading) return <div className="dashboard-loading">Loading dashboard data...</div>;
+    if (loading) return (
+        <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p className="loading-text">Loading...</p>
+        </div>
+    );
     if (error) return <div className="dashboard-error">{error}</div>;
 
     const getWelcomeMessage = () => {

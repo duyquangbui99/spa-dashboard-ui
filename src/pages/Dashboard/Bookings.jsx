@@ -412,7 +412,12 @@ const Bookings = () => {
         };
     }, []);
 
-    if (loading) return <div className="dashboard-loading">Loading bookings data...</div>;
+    if (loading) return (
+        <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p className="loading-text">Loading...</p>
+        </div>
+    );
 
     if (error) return (
         <div className="booking-error">

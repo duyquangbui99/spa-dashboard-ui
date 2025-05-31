@@ -208,13 +208,13 @@ const Services = () => {
             )}
 
             {isModalOpen && (
-                <div className="modal-overlay">
+                <div className="services-modal-overlay">
                     <div className="services-modal-content">
-                        <div className="modal-header">
+                        <div className="services-modal-header">
                             <h3>{editingId ? 'Edit' : 'Create'} {view === 'services' ? 'Service' : 'Category'}</h3>
-                            <button className="close-button" onClick={resetForm}>&times;</button>
+                            <button className="services-close-button" onClick={resetForm}>&times;</button>
                         </div>
-                        <form className="service-form" onSubmit={handleSubmit}>
+                        <form className="services-form" onSubmit={handleSubmit}>
                             <input
                                 name="name"
                                 placeholder="Name"
@@ -260,7 +260,7 @@ const Services = () => {
                                 </>
                             )}
                             {error && <p className="error">{error}</p>}
-                            <div className="modal-actions">
+                            <div className="services-modal-actions">
                                 <button type="button" onClick={resetForm}>Cancel</button>
                                 <button type="submit" className="submit-button">{editingId ? 'Update' : 'Create'}</button>
                             </div>
