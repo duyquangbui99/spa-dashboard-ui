@@ -138,6 +138,13 @@ const DayView = ({
                                         onClick={() => handleTimeslotClick(time, staff._id)}
                                         style={{ cursor: 'pointer' }}
                                     >
+                                        {/* Show booking count if more than 1 */}
+                                        {staffBookings.length > 1 && (
+                                            <div className="timeslot-booking-count">
+                                                {staffBookings.length}
+                                            </div>
+                                        )}
+
                                         {staffBookings.map((booking, bookingIndex) => {
                                             let mainService = '';
                                             let serviceDisplay = '';
@@ -198,7 +205,7 @@ const DayView = ({
                                                         left: '1%',
                                                         top: position.top,
                                                         position: 'absolute',
-                                                        zIndex: position.zIndex || (bookingIndex + 1),
+
                                                         backgroundColor: category ? category.color : 'var(--color-background)',
                                                         borderLeftColor: category
                                                             ? `#${[...category.color.slice(1).match(/.{2}/g)].map(c => (Math.max(0, parseInt(c, 16) - 10)).toString(16).padStart(2, '0')).join('')}`
