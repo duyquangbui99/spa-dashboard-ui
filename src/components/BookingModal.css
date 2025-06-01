@@ -608,11 +608,14 @@
     display: flex;
     margin: 0;
     justify-content: space-between;
-    padding: 1.5rem 2rem;
+    padding: 1rem;
     background: rgba(255, 255, 255, 0.95);
     gap: 1rem;
     border-top: 1px solid rgba(111, 221, 139, 0.1);
     backdrop-filter: blur(10px);
+    position: sticky;
+    bottom: 0;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .modal-overlay .modal-actions button {
