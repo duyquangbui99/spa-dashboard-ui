@@ -353,7 +353,7 @@
     height: 100px;
     border-bottom: 1px solid #eee;
     border-right: 1px solid #eee;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 1);
 }
 
 .day-time-slot:hover {
@@ -1016,8 +1016,9 @@
     height: 70px;
     border-bottom: 1px solid var(--color-button-border);
     position: relative;
-    background-color: var(--color-background);
+    background: rgba(255, 255, 255, 1);
     transition: background-color 0.2s ease;
+    z-index: 1;
 }
 
 .day-view-slot:hover {
@@ -1356,7 +1357,7 @@
     position: relative;
     height: 70px;
     border-bottom: 1px solid var(--color-button-border);
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 1);
     cursor: pointer;
     transition: background-color 0.2s ease;
     z-index: 1;
@@ -1603,4 +1604,53 @@
 .add-booking-btn:disabled {
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+/* Multiple bookings indicator */
+.booking-card::before {
+    content: attr(data-booking-count);
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: var(--color-accent);
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s ease;
+    z-index: 1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.booking-card[data-booking-count]:not([data-booking-count="1"])::before {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Timeslot booking count indicator - positioned in time slot area */
+.timeslot-booking-count {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #dc2626;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    line-height: 1;
 }

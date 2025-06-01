@@ -124,6 +124,13 @@ const WeekView = ({
                                     key={timeIndex}
                                     onClick={() => handleTimeslotClick(day, time)}
                                 >
+                                    {/* Show booking count if more than 1 */}
+                                    {slotBookings.length > 1 && (
+                                        <div className="timeslot-booking-count">
+                                            {slotBookings.length}
+                                        </div>
+                                    )}
+
                                     {slotBookings.map((booking, bookingIndex) => {
                                         let mainService = '';
                                         let serviceDisplay = '';
