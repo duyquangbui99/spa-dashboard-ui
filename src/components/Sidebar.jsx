@@ -74,7 +74,10 @@ const Sidebar = () => {
             {isMobileView && (
                 <div className="mobile-navbar">
                     <div className="mobile-navbar-header">
-                        <h1>BookSmart</h1>
+                        <div className="mobile-logo-container">
+                            <img src="/logo.svg" alt="BookSmart Logo" className="mobile-logo" />
+                            <h1>Schedulo</h1>
+                        </div>
                         <button className="mobile-menu-toggle" onClick={toggleMobileNav}>
                             {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
@@ -106,7 +109,10 @@ const Sidebar = () => {
             {!isMobileView && (
                 <div className="sidebar">
                     <div className="sidebar-header">
-                        <h1>BookSmart</h1>
+                        <div className="logo-container">
+                            <img src="/logo.svg" alt="Schedulo Logo" className="sidebar-logo" />
+                            <h1>Schedulo</h1>
+                        </div>
                     </div>
 
                     <div className="sidebar-nav">
