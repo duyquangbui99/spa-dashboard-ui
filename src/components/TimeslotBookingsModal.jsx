@@ -2,7 +2,7 @@ import React from 'react';
 import './TimeslotBookingsModal.css';
 import { Pencil, Trash2 } from 'lucide-react';
 
-const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBooking, onDeleteBooking, categories, workers }) => {
+const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBooking, onDeleteBooking, categories, workers, getServiceClass }) => {
     if (!isOpen) return null;
 
     const handleEdit = (booking) => {
@@ -18,21 +18,38 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBo
     };
 
     const getServiceColor = (booking) => {
-        if (!booking.services?.[0]?.serviceId) {
-            return 'var(--color-accent)';
-        }
+        // Extract main service name using the same logic as WeekView
+        let mainService = '';
 
-        const service = booking.services[0].serviceId;
-
-        // If service is an object with categoryId
-        if (typeof service === 'object' && service.categoryId) {
-            const category = categories.find(cat => cat._id === service.categoryId);
-            if (category) {
-                return category.color;
+        if (booking.serviceIds?.[0]?.name) {
+            mainService = booking.serviceIds[0].name;
+        } else if (booking.services?.[0]?.serviceId) {
+            // Look up service names from worker
+            const worker = workers.find(w => w._id === (booking.workerId?._id || booking.workerId));
+            if (worker) {
+                // Use the first service name for color
+                if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
+                    mainService = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
+                } else {
+                    const svc = worker.services.find(ws => ws._id === booking.services[0].serviceId);
+                    if (svc) mainService = svc.name;
+                }
+            } else {
+                if (typeof booking.services[0].serviceId === 'object' && booking.services[0].serviceId !== null) {
+                    mainService = booking.services[0].serviceId.name || booking.services[0].serviceId._id || '';
+                } else {
+                    mainService = booking.services[0].serviceId;
+                }
             }
         }
 
-        return 'var(--color-accent)';
+        // Use the same logic as WeekView to get category color
+        const serviceClass = getServiceClass(mainService);
+        const category = categories.find(cat =>
+            cat.name.toLowerCase() === serviceClass.replace(/-/g, ' ')
+        );
+
+        return category ? category.color : 'var(--color-accent)';
     };
 
     return (
@@ -51,16 +68,19 @@ const TimeslotBookingsModal = ({ isOpen, onClose, bookings, formatTime, onEditBo
                                 <div
                                     key={booking._id}
                                     className="timeslot-booking-item"
-                                    style={{ borderLeft: `4px solid ${getServiceColor(booking)}` }}
+                                    style={{
+                                        borderLeft: `4px solid ${getServiceColor(booking)}`,
+                                        backgroundColor: getServiceColor(booking)
+                                    }}
                                 >
                                     <div className="timeslot-booking-time">
                                         {formatTime(booking.startTime)}
                                     </div>
                                     <div className="timeslot-booking-details">
                                         <div className="timeslot-booking-customer">
-                                            <span className="timeslot-customer-name">{booking.customerName}</span>
+                                            <span className="timeslot-customer-name">Customer: {booking.customerName}</span>
                                             {booking.customerPhone && (
-                                                <span className="timeslot-customer-phone">{booking.customerPhone}</span>
+                                                <span className="timeslot-customer-phone">Phone: {booking.customerPhone}</span>
                                             )}
                                         </div>
                                         <div className="timeslot-booking-service">
