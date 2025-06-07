@@ -238,6 +238,9 @@ const DayView = ({
                 }}
                 bookings={selectedTimeslot && selectedStaffColumn ? getStaffBookings(selectedTimeslot, selectedStaffColumn) : []}
                 formatTime={formatTime}
+                categories={categories}
+                workers={workers}
+                getServiceClass={getServiceClass}
                 onEditBooking={onEditBooking}
                 onDeleteBooking={onDeleteBooking}
             />

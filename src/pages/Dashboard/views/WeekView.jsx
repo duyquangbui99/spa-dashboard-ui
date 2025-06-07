@@ -226,6 +226,9 @@ const WeekView = ({
                 }}
                 bookings={selectedTimeslot ? getBookingsForSlot(selectedDay, selectedTimeslot) : []}
                 formatTime={formatTime}
+                categories={categories}
+                workers={workers}
+                getServiceClass={getServiceClass}
                 onEditBooking={onEditBooking}
                 onDeleteBooking={onDeleteBooking}
             />

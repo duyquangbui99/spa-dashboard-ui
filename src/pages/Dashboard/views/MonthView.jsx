@@ -192,6 +192,9 @@ const MonthView = ({
                 onClose={() => setSelectedDay(null)}
                 bookings={selectedDay ? getBookingsForDay(selectedDay) : []}
                 formatTime={formatTime}
+                categories={categories}
+                workers={workers}
+                getServiceClass={getServiceClass}
                 onEditBooking={onEditBooking}
                 onDeleteBooking={onDeleteBooking}
             />
