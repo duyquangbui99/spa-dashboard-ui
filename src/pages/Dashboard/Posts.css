@@ -400,6 +400,14 @@
     background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%) !important;
 }
 
+.view-posts-btn {
+    background: linear-gradient(135deg, #4267B2 0%, #365899 100%) !important;
+}
+
+.view-posts-btn:hover:not(:disabled) {
+    box-shadow: 0 8px 25px rgba(66, 103, 178, 0.3) !important;
+}
+
 /* Floating elements animation */
 @keyframes float {
 
