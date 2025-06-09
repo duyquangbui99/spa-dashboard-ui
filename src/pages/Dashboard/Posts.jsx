@@ -127,6 +127,15 @@ const Posts = () => {
                             </span>
                         </button>
 
+                        <button
+                            onClick={() => window.open('https://www.facebook.com/profile.php?id=61574994971322', '_blank')}
+                            className="view-posts-btn"
+                        >
+                            <span className="button-content">
+                                👀 View Your Posts
+                            </span>
+                        </button>
+
                         {successMessage && <p className="success">{successMessage}</p>}
                         {error && <p className="error">{error}</p>}
                     </div>
