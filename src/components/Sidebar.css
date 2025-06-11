@@ -43,7 +43,6 @@
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
 }
 
 .sidebar-logo {
@@ -169,7 +168,6 @@
 .mobile-logo-container {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
 }
 
 .mobile-logo {
