@@ -98,7 +98,7 @@ const Home = () => {
                 </div>
             </header>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu 
             <div className="mobile-menu">
                 <div className="p-4">
                     <div className="flex justify-between items-center mb-8">
@@ -110,7 +110,7 @@ const Home = () => {
                         </button>
                     </div>
                 </div>
-            </div>
+            </div>*/}
 
             {/* Hero Section */}
             <section className="hero">
